@@ -1,0 +1,179 @@
+"""
+Payload trả về sau khi xác thực
+"""
+type AuthPayload {
+  """
+  Thông tin người dùng, null nếu chưa đăng ký
+  """
+  user: User
+  """
+  Token truy cập
+  """
+  accessToken: String
+  """
+  Token làm mới
+  """
+  refreshToken: String
+  """
+  Thông tin từ Firebase khi user chưa đăng ký
+  """
+  firebaseInfo: FirebaseUserInfo
+  """
+  Đánh dấu cần liên kết tài khoản
+  """
+  needsAccountLinking: Boolean
+  """
+  Phương thức đăng nhập hiện tại của tài khoản
+  """
+  existingProvider: String
+}
+
+"""
+Thông tin người dùng
+"""
+type User {
+  """
+  ID duy nhất của người dùng
+  """
+  _id: ID!
+  """
+  ID của người dùng trên Firebase
+  """
+  firebaseUid: String
+  """
+  Địa chỉ email của người dùng
+  """
+  email: String!
+  """
+  Họ và tên đầy đủ
+  """
+  fullName: String!
+  """
+  Số điện thoại
+  """
+  phoneNumber: String
+  """
+  Vai trò của người dùng
+  """
+  role: UserRole!
+  """
+  Trạng thái tài khoản
+  """
+  status: UserStatus!
+  """
+  Thời gian tạo tài khoản
+  """
+  createdAt: DateTime!
+  """
+  Thời gian cập nhật gần nhất
+  """
+  updatedAt: DateTime!
+}
+
+"""
+Vai trò người dùng trong hệ thống
+"""
+enum UserRole {
+  """
+  Quản trị viên
+  """
+  ADMIN
+  """
+  Người bán hàng
+  """
+  SELLER
+  """
+  Người dùng thông thường
+  """
+  USER
+}
+
+"""
+Trạng thái tài khoản người dùng
+"""
+enum UserStatus {
+  """
+  Đang hoạt động
+  """
+  ACTIVE
+  """
+  Không hoạt động
+  """
+  INACTIVE
+  """
+  Tạm khóa
+  """
+  SUSPENDED
+}
+
+"""
+Input cho việc đăng ký tài khoản mới
+"""
+input RegisterInput {
+  """
+  firebase UID của người dùng từ Firebase Authentication
+  """
+  firebaseUid: String!
+}
+
+"""
+Thông tin user từ Firebase
+"""
+type FirebaseUserInfo {
+  """
+  Firebase UID của người dùng
+  """
+  firebaseUid: String!
+  """
+  Email của người dùng
+  """
+  email: String
+  """
+  Tên hiển thị
+  """
+  displayName: String
+  """
+  URL ảnh đại diện
+  """
+  photoURL: String
+  """
+  Số điện thoại
+  """
+  phoneNumber: String
+  """
+  Nhà cung cấp đăng nhập
+  """
+  providerId: String
+}
+
+type RegisterSellerPayload {
+  auth: AuthPayload!
+  shop: Shop!
+}
+
+type Query {
+  """
+  Lấy thông tin người dùng hiện tại
+  """
+  getCurrentUser: User
+}
+
+type Mutation {
+  """
+  Xác thực token từ Firebase và lấy thông tin user
+  """
+  verifyFirebaseToken: AuthPayload!
+  """
+  Đăng ký tài khoản mới bằng Firebase UID
+  """
+  register(input: RegisterInput!): AuthPayload!
+  """
+  Đăng ký tài khoản người bán
+  """
+  registerSeller(input: CreateShopInput!): RegisterSellerPayload!
+  """
+  Liên kết tài khoản hiện tại với tài khoản Google.
+  Token sẽ được lấy từ context sau khi frontend đã xử lý link provider
+  """
+  linkGoogleAccount: AuthPayload!
+}

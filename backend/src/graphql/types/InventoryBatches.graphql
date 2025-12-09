@@ -1,0 +1,45 @@
+type InventoryBatch {
+  _id: ID!
+  product_id: ID!
+  variant_id: ID
+  batch_number: String!
+  quantity: Int!
+  remaining_quantity: Int!
+  import_date: DateTime!
+}
+
+type InventoryTransaction {
+  _id: ID!
+  product_id: ID!
+  variant_id: ID
+  batch_id: ID!
+  type: String!
+  quantity: Int!
+  createdAt: DateTime!
+  note: String
+}
+
+input ImportInventoryInput {
+  product_id: ID!
+  variant_id: ID!
+  quantity: Int!
+  import_price: Float
+  import_date: DateTime
+  note: String
+  batch_number: String
+}
+
+input ExportInventoryInput {
+  product_id: ID!
+  variant_id: ID
+  quantity: Int!
+  export_date: DateTime
+  note: String
+}
+
+scalar DateTime
+
+type Mutation {
+  importInventory(input: ImportInventoryInput!): InventoryBatch
+  exportInventory(input: ExportInventoryInput!): Boolean
+}

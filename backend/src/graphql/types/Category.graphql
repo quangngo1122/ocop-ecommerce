@@ -1,0 +1,186 @@
+"""
+Đại diện cho một danh mục trong hệ thống
+"""
+type Category {
+  """
+  ID định danh duy nhất của danh mục
+  """
+  _id: ID!
+
+  """
+  Tên của danh mục
+  """
+  name: String!
+
+  """
+  Đường dẫn URL thân thiện, được tạo từ tên
+  """
+  slug: String!
+
+  """
+  Tham chiếu đến danh mục cha (nếu là danh mục con)
+  """
+  parent: Category
+
+  """
+  Tham chiếu đến danh mục con (nếu là danh mục con)
+  """
+  children: [Category!]!
+
+  """
+  Trạng thái hiện tại của danh mục (active/inactive)
+  """
+  status: String!
+
+  """
+  Thời điểm tạo danh mục
+  """
+  createdAt: String
+
+  """
+  Thời điểm cập nhật danh mục gần nhất
+  """
+  updatedAt: String
+}
+
+"""
+Kiểu kết nối cho phân trang kết quả danh mục
+"""
+type CategoryConnection {
+  """
+  Danh sách các danh mục trong trang hiện tại
+  """
+  items: [Category!]!
+
+  """
+  Tổng số danh mục phù hợp với bộ lọc
+  """
+  total: Int!
+
+  """
+  Cho biết có còn danh mục ở các trang tiếp theo không
+  """
+  hasMore: Boolean!
+}
+
+"""
+Tùy chọn lọc cho truy vấn danh mục
+"""
+input CategoryFilter {
+  """
+  Lọc theo tên danh mục (không phân biệt hoa thường)
+  """
+  name: String
+
+  """
+  Lọc theo slug chính xác
+  """
+  slug: String
+
+  """
+  Lọc theo ID danh mục
+  """
+  _id: ID
+}
+
+"""
+Tham số phân trang cho truy vấn danh sách
+"""
+input PaginationInput {
+  """
+  Số lượng bản ghi bỏ qua (mặc định: 0)
+  """
+  offset: Int
+
+  """
+  Số lượng bản ghi tối đa trả về (mặc định: 10, tối đa: 50)
+  """
+  limit: Int
+}
+
+type Query {
+  """
+  Lấy một danh mục theo ID
+  """
+  category(_id: ID!): Category
+
+  """
+  Lấy danh sách danh mục có phân trang và lọc tùy chọn
+  """
+  categories(
+    filter: CategoryFilter
+    pagination: PaginationInput
+  ): CategoryConnection!
+
+  """
+  lấy danh sách danh mục cha
+  """
+  parentCategories(pagination: PaginationInput): CategoryConnection!
+}
+
+type Mutation {
+  """
+  Tạo mới một danh mục
+  """
+  createCategory(input: CreateCategoryInput!): Category!
+
+  """
+  Cập nhật một danh mục đã tồn tại
+  """
+  updateCategory(_id: ID!, input: UpdateCategoryInput!): Category!
+
+  """
+  Xóa một danh mục theo ID
+  """
+  deleteCategory(_id: ID!): Category
+}
+
+"""
+Input cho việc tạo danh mục mới
+"""
+input CreateCategoryInput {
+  """
+  Tên danh mục (bắt buộc)
+  """
+  name: String!
+
+  """
+  Slug tùy chỉnh (tùy chọn, sẽ được tạo từ tên nếu không cung cấp)
+  """
+  slug: String
+
+  """
+  ID của danh mục cha (tùy chọn)
+  """
+  parentId: ID
+
+  """
+  Trạng thái ban đầu (tùy chọn, mặc định là 'active')
+  """
+  status: String
+}
+
+"""
+Input cho việc cập nhật danh mục
+"""
+input UpdateCategoryInput {
+  """
+  Tên mới cho danh mục
+  """
+  name: String
+
+  """
+  Slug mới cho danh mục
+  """
+  slug: String
+
+  """
+  ID mới của danh mục cha
+  """
+  parentId: ID
+
+  """
+  Trạng thái mới cho danh mục
+  """
+  status: String
+}

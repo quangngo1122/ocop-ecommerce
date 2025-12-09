@@ -1,0 +1,28 @@
+# Bỏ qua node_modules cục bộ vì chúng được cài đặt trong container
+node_modules
+
+# Bỏ qua thư mục build nếu đã tạo từ trước
+dist
+
+# Các file log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Git files
+.git
+.gitignore
+
+# Docker files (nếu không cần thiết copy vào image)
+Dockerfile
+.dockerignore
+
+# IDE / Editor files
+.vscode
+.idea
+*.swp
+*.swo
+
+# Hệ điều hành
+.DS_Store
+Thumbs.db

@@ -1,0 +1,684 @@
+"""
+Đại diện cho một sản phẩm trong hệ thống thương mại điện tử
+"""
+type Product {
+  """
+  ID định danh duy nhất của sản phẩm
+  """
+  _id: ID!
+
+  """
+  Tên sản phẩm
+  """
+  name: String!
+
+  """
+  Đường dẫn URL thân thiện được tạo từ tên sản phẩm
+  """
+  slug: String
+
+  """
+  Cửa hàng bán sản phẩm này
+  """
+  shop_id: Shop
+
+  """
+  Biến thể sản phẩm
+  """
+  variants: [ProductVariant!]!
+
+  """
+  Danh mục sản phẩm
+  """
+  category_id: Category
+
+  """
+  Thông tin mô tả sản phẩm
+  """
+  description: ProductDescription!
+
+  """
+  Danh sách hình ảnh sản phẩm
+  """
+  images: [String!]!
+
+  """
+  Thông tin giá sản phẩm
+  """
+  price: ProductPrice!
+
+  """
+  Thông số kỹ thuật của sản phẩm
+  """
+  specifications: [ProductSpecification!]!
+
+  """
+  Thông tin đánh giá sản phẩm
+  """
+  rating: ProductRating!
+
+  """
+  Trạng thái hiện tại của sản phẩm
+  """
+  status: ProductStatus!
+
+  """
+  Số lượng tồn kho của toàn bộ biến thể sản phẩm
+  """
+  stock: Int!
+
+  """
+  Số lượng sản phẩm đã bán
+  """
+  sold: Int
+
+  """
+  Thời điểm tạo
+  """
+  createdAt: DateTime!
+
+  """
+  Thời điểm cập nhật cuối
+  """
+  updatedAt: DateTime!
+}
+
+"""
+Thông tin mô tả sản phẩm
+"""
+type ProductDescription {
+  """
+  Mô tả ngắn gọn về sản phẩm
+  """
+  short: String
+
+  """
+  Mô tả chi tiết về sản phẩm
+  """
+  full: String!
+}
+
+"""
+Thông tin giá sản phẩm
+"""
+type ProductPrice {
+  """
+  Giá gốc của sản phẩm
+  """
+  regular: Float!
+  """
+  Giá khuyến mãi của sản phẩm (nếu có)
+  """
+  sale: Float
+  """
+  Thời gian bắt đầu khuyến mãi
+  """
+  saleStartDate: DateTime
+  """
+  Thời gian kết thúc khuyến mãi
+  """
+  saleEndDate: DateTime
+  """
+  Giá thấp nhất của sản phẩm (cho các biến thể)
+  """
+  min_price: Float!
+
+  """
+  Giá cao nhất của sản phẩm (cho các biến thể)
+  """
+  max_price: Float!
+}
+
+"""
+Thông số kỹ thuật sản phẩm
+"""
+type ProductSpecification {
+  """
+  Tên thông số
+  """
+  name: String!
+
+  """
+  Giá trị thông số
+  """
+  value: String!
+}
+
+"""
+Thông tin đánh giá sản phẩm
+"""
+type ProductRating {
+  """
+  Điểm đánh giá trung bình (0-5)
+  """
+  average: Float!
+
+  """
+  Số lượng đánh giá đã nhận
+  """
+  count: Int!
+}
+
+type ProductAttribute {
+  """
+  Tên thuộc tính (VD: Màu sắc, Kích thước)
+  """
+  name: String!
+
+  """
+  Giá trị của thuộc tính (VD: Đỏ, XL)
+  """
+  value: String!
+
+  _id: ID!
+}
+
+type Attribute {
+  """
+  Tên thuộc tính (VD: Màu sắc, Kích thước)
+  """
+  name: String!
+
+  """
+  Giá trị của thuộc tính (VD: Đỏ, XL)
+  """
+  value: String!
+
+  _id: ID!
+}
+
+"""
+Biến thể sản phẩm
+"""
+type ProductVariant {
+  _id: ID!
+  product_id: Product!
+  slug: String!
+  image: String!
+  stock_quantity: Int!
+  selling_price: Int!
+  attributes: [ProductAttribute!]!
+  weight: Float!
+  length: Float!
+  width: Float!
+  height: Float!
+  sku: String!
+}
+
+"""
+Các trạng thái có thể của sản phẩm
+"""
+enum ProductStatus {
+  """
+  Sản phẩm đang được nháp
+  """
+  draft
+
+  """
+  Sản phẩm đang chờ phê duyệt
+  """
+  pending
+
+  """
+  Sản phẩm đang hoạt động và có thể mua
+  """
+  active
+
+  """
+  Sản phẩm đã bị tạm ngưng
+  """
+  suspended
+
+  """
+  Sản phẩm đã bị xóa
+  """
+  deleted
+}
+
+"""
+Input type để tạo sản phẩm mới
+"""
+input CreateProductInput {
+  """
+  Tên sản phẩm
+  """
+  name: String!
+
+  """
+  ID danh mục
+  """
+  categoryId: ID!
+
+  """
+  Thông tin mô tả
+  """
+  description: ProductDescriptionInput!
+
+  """
+  Danh sách hình ảnh
+  """
+  images: [Upload!]!
+
+  """
+  Thông số kỹ thuật
+  """
+  specifications: [ProductSpecificationInput!]
+
+  """
+  Thông tin tổ hợp biến thể
+  """
+  variantCombinations: [VariantCombinationInput!]!
+}
+
+"""
+Input mô tả sản phẩm
+"""
+input ProductDescriptionInput {
+  """
+  Mô tả ngắn gọn
+  """
+  short: String
+
+  """
+  Mô tả chi tiết
+  """
+  full: String
+}
+
+"""
+Input thông tin giá sản phẩm
+"""
+input ProductPriceInput {
+  """
+  Giá gốc
+  """
+  regular: Float!
+
+  """
+  Giá khuyến mãi
+  """
+  sale: Float
+
+  """
+  Thời gian bắt đầu khuyến mãi
+  """
+  saleStartDate: DateTime
+
+  """
+  Thời gian kết thúc khuyến mãi
+  """
+  saleEndDate: DateTime
+}
+
+"""
+Input thông tin tồn kho
+"""
+input ProductInventoryInput {
+  """
+  Số lượng tồn kho
+  """
+  quantity: Int!
+
+  """
+  Mã SKU sản phẩm
+  """
+  sku: String
+
+  """
+  Ngưỡng cảnh báo hết hàng
+  """
+  lowStockThreshold: Int
+}
+
+"""
+Input thông số kỹ thuật
+"""
+input ProductSpecificationInput {
+  """
+  Tên thông số
+  """
+  name: String!
+
+  """
+  Giá trị thông số
+  """
+  value: String!
+}
+
+"""
+Thông tin chi tiết cho từng tổ hợp biến thể đa chiều
+"""
+input ProductAttributeInput {
+  """
+  Tên thuộc tính
+  """
+  name: String!
+
+  """
+  Giá trị thuộc tính
+  """
+  value: String!
+}
+
+"""
+Input thông tin tổ hợp biến thể
+"""
+input VariantCombinationInput {
+  """
+  Danh sách thuộc tính của tổ hợp biến thể
+  """
+  attributes: [ProductAttributeInput!]!
+
+  """
+  Giá cho tổ hợp biến thể này
+  """
+  price: Float
+
+  """
+  Số lượng tồn kho cho tổ hợp biến thể này
+  """
+  stock_quantity: Int
+
+  """
+  Mã SKU cho tổ hợp biến thể này
+  """
+  sku: String
+
+  """
+  Danh sách hình ảnh cho tổ hợp biến thể này
+  """
+  image: Upload!
+
+  """
+  Cân nặng
+  """
+  weight: Float
+
+  """
+  Chiều dài
+  """
+  length: Float
+
+  """
+  Chiều rộng
+  """
+  width: Float
+
+  """
+  Chiều cao
+  """
+  height: Float
+}
+
+"""
+Input cập nhật sản phẩm
+"""
+input UpdateProductInput {
+  """
+  Tên sản phẩm cập nhật
+  """
+  name: String
+  """
+  Slug sản phẩm cập nhật
+  """
+  slug: String
+  """
+  ID danh mục cập nhật
+  """
+  categoryId: ID
+  """
+  Mô tả cập nhật
+  """
+  description: ProductDescriptionInput
+
+  """
+  Hình ảnh cập nhật
+  """
+  images: [Upload!]
+
+  """
+  Thông số kỹ thuật cập nhật
+  """
+  specifications: [ProductSpecificationInput!]
+}
+
+"""
+Bộ lọc tìm kiếm sản phẩm
+"""
+input ProductFilter {
+  """
+  Tên sản phẩm để tìm kiếm
+  """
+  name: String
+  """
+  Lọc theo trạng thái
+  """
+  status: ProductStatus
+
+  """
+  Lọc theo danh mục
+  """
+  categoryId: ID
+
+  """
+  Lọc theo provinceId
+  """
+  provinceId: Int
+
+  """
+  Lọc theo districtId
+  """
+  districtId: Int
+
+  """
+  Lọc theo shop
+  """
+  shopId: ID
+
+  """
+  Giá tối thiểu
+  """
+  minPrice: Float
+
+  """
+  Giá tối đa
+  """
+  maxPrice: Float
+
+  sortByName: SortInput
+  sortByPrice: SortInput
+  sortByDate: SortInput
+  sortByRating: SortInput
+  sortBySold: SortInput
+}
+
+enum SortInput {
+  """
+  Sắp xếp theo giá tăng dần
+  """
+  ascending
+
+  """
+  Sắp xếp theo giá giảm dần
+  """
+  descending
+}
+
+"""
+Input phân trang
+"""
+input PaginationInput {
+  """
+  Vị trí bắt đầu
+  """
+  offset: Int
+
+  """
+  Số lượng kết quả trả về
+  """
+  limit: Int
+}
+
+"""
+Danh sách sản phẩm có phân trang
+"""
+type ProductConnection {
+  """
+  Danh sách sản phẩm
+  """
+  items: [Product!]!
+
+  """
+  Tổng số sản phẩm thỏa mãn điều kiện
+  """
+  total: Int!
+
+  """
+  Còn trang tiếp theo không
+  """
+  hasMore: Boolean!
+}
+
+input UpdateVariantInput {
+  slug: String
+  selling_price: Float
+  stock_quantity: Int
+  image: Upload
+  attributes: [UpdateVariantAttributeInput]
+  weight: Int
+  length: Int
+  width: Int
+  height: Int
+  sku: String
+}
+
+input UpdateVariantAttributeInput {
+  _id: ID!
+  name: String
+  value: String
+}
+
+input UpdateVariantImageInput {
+  _id: ID!
+  link: String
+  alt: String
+}
+
+scalar DateTime
+
+input filterProduct {
+  _id: ID
+  slug: String
+}
+
+type Query {
+  """
+  Lấy thông tin một sản phẩm theo ID
+  """
+  product(filter: filterProduct!): Product
+
+  """
+  Lấy danh sách sản phẩm với các bộ lọc và phân trang
+  """
+  products(
+    filter: ProductFilter
+    pagination: PaginationInput
+  ): ProductConnection!
+
+  """
+  Lấy danh sách sản phẩm thuộc về một cửa hàng cụ thể
+  """
+  shopProducts(
+    shopId: ID!
+    filter: ProductFilter
+    pagination: PaginationInput
+  ): ProductConnection!
+
+  variant(variantId: ID!): ProductVariant
+}
+type Mutation {
+  """
+  Tạo sản phẩm mới
+  """
+  createProduct(input: CreateProductInput!): Product!
+
+  """
+  Cập nhật trạng thái sản phẩm
+  """
+  updateProductStatus(productId: ID!, status: ProductStatus!): Product!
+
+  """
+  Cập nhật sản phẩm theo ID
+  """
+  updateProduct(productId: ID!, input: UpdateProductInput!): Product!
+
+  """
+  Cập nhật biến thể sản phẩm
+  """
+  updateVariant(variantId: ID!, input: UpdateVariantInput!): Product!
+
+  """
+  Xóa sản phẩm theo ID
+  """
+  deleteProduct(_id: ID!): Product!
+}
+
+"""
+Đánh giá của người dùng cho sản phẩm
+"""
+type Rating {
+  """
+  ID định danh của đánh giá
+  """
+  _id: ID!
+
+  """
+  Người dùng thực hiện đánh giá
+  """
+  userId: ID!
+
+  """
+  Sản phẩm được đánh giá
+  """
+  productId: ID!
+
+  """
+  Số sao đánh giá (1-5)
+  """
+  stars: Int!
+
+  """
+  Nội dung đánh giá
+  """
+  comment: String
+
+  """
+  Hình ảnh đính kèm đánh giá
+  """
+  images: [String!]
+
+  """
+  Thời điểm đánh giá
+  """
+  createdAt: DateTime!
+
+  """
+  Thời điểm cập nhật đánh giá
+  """
+  updatedAt: DateTime!
+}
+
+type Variant {
+  _id: ID!
+  product_id: ID!
+  slug: String!
+  selling_price: Int!
+  image: String!
+  stock_quantity: Int!
+  attributes: [ProductAttribute!]!
+  weight: Int!
+  length: Int!
+  width: Int!
+  height: Int!
+  sku: String!
+}

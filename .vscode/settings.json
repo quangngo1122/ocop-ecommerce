@@ -1,0 +1,9 @@
+// đây là file để cấu hình vs code cho việc gợi ý commit message
+
+{
+  "github.copilot.chat.commitMessageGeneration.instructions": [
+    {
+      "text": "Ngôn ngữ Tiếng Việt, Hãy tuân thủ nghiêm ngặt định dạng Conventional Commits cho các thông điệp commit. Sử dụng cấu trúc dưới đây:\n\n```\n<type>[optional scope]: <gitmoji> <description>\n\n[optional body]\n```\n\nHướng dẫn:\n\n1. **Type và Scope**: Chọn một `type` phù hợp (ví dụ: `feat` cho tính năng mới, `fix` cho sửa lỗi) và một `scope` tùy chọn để mô tả module hoặc tính năng bị ảnh hưởng.\n\n2. **Description**: Viết một mô tả ngắn gọn, đầy đủ thông tin ở phần tiêu đề; sử dụng dấu backtick (`) nếu tham chiếu đến mã nguồn hoặc các thuật ngữ cụ thể.\n\n4. **Body**: Để biết thêm chi tiết, hãy sử dụng phần `body` có cấu trúc tốt:\n   - Sử dụng dấu gạch đầu dòng (`*`) để rõ ràng.\n   - Mô tả rõ ràng động lực, bối cảnh hoặc chi tiết kỹ thuật đằng sau sự thay đổi, nếu có.\n\nThông điệp commit phải rõ ràng, đầy đủ thông tin và chuyên nghiệp, hỗ trợ khả năng đọc và theo dõi dự án. Bằng tiếng Việt"
+    }
+  ]
+}

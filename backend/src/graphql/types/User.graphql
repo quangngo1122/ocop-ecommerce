@@ -1,0 +1,161 @@
+type Address {
+  _id: ID
+  name: String
+  phone: String
+  address: String
+  province: String
+  district: String
+  ward: String
+  province_id: Int
+  district_id: Int
+  ward_code: Int
+  isDefault: Boolean
+}
+
+type User {
+  _id: ID!
+  email: String!
+  fullName: String!
+  phoneNumber: String
+  role: UserRole!
+  avatar: String
+  address: [Address]
+  isActive: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  firebaseUid: String
+  provider: String
+  gender: String
+  dateOfBirth: DateTime
+  cart: Cart
+}
+
+type Cart {
+  _id: ID!
+  variantId: ID!
+  quantity: Int!
+  price: Float!
+  isChecked: Boolean!
+  createdAt: DateTime!
+}
+
+type ShopCart {
+  shop: Shop!
+  items: [CartItem!]!
+}
+
+type CartItem {
+  _id: ID!
+  VariantId: ID!
+  attributes: [VariantAttribute]
+  stock_quantity: Int
+  quantity: Int!
+  isChecked: Boolean!
+  price: Float!
+  product: Product!
+  createdAt: DateTime!
+}
+
+type VariantAttribute {
+  _id: ID!
+  name: String!
+  value: String!
+}
+
+input CartInput {
+  VariantId: ID!
+  quantity: Int!
+}
+# Remove the Role enum since we'll use UserRole from Auth.graphql
+
+input AddressInput {
+  name: String!
+  phone: String!
+  address: String!
+  province: String!
+  district: String!
+  ward: String!
+  province_id: Int!
+  district_id: Int!
+  ward_code: Int!
+  isDefault: Boolean!
+}
+
+enum gender {
+  """
+  Nam
+  """
+  male
+  """
+  Nữ
+  """
+  female
+}
+
+input CreateUserInput {
+  email: String!
+  password: String!
+  fullName: String!
+  phoneNumber: String!
+  role: UserRole
+  avatar: Upload
+  address: [AddressInput]
+  gender: gender
+  dateOfBirth: DateTime
+}
+
+input UpdateUserInput {
+  email: String
+  password: String
+  fullName: String
+  phoneNumber: String
+  role: UserRole
+  avatar: Upload
+  address: [AddressInput]
+  isActive: Boolean
+  gender: gender
+  dateOfBirth: DateTime
+}
+
+input CartFilterInput {
+  "Lọc theo isChecked"
+  isChecked: Boolean
+}
+
+type Query {
+  users: [User!]!
+  user(_id: ID!): User
+  """
+  Tìm user bằng Firebase UID
+  """
+  userByFirebaseUid(firebaseUid: String!): User
+  """
+  Tìm user bằng email
+  """
+  userByEmail(email: String!): User
+
+  address(userId: ID!, addressId: ID!): Address
+  addresses(userId: ID!): [Address!]!
+
+  myCart(filter: CartFilterInput, pagination: PaginationInput): [ShopCart!]!
+}
+
+type Mutation {
+  # người dùng
+  createUser(input: CreateUserInput!): User!
+  updateUser(_id: ID!, input: UpdateUserInput!): User!
+  deleteUser(_id: ID!): Boolean!
+  # địa chỉ
+  addAddress(userId: ID!, input: AddressInput!): [Address!]!
+  updateAddress(userId: ID!, addressId: ID!, input: AddressInput!): [Address!]!
+  deleteAddress(userId: ID!, addressId: ID!): [Address!]!
+  setDefaultAddress(userId: ID!, addressId: ID!): [Address!]!
+  # giỏ hàng
+  addToCart(input: CartInput!): [ShopCart!]!
+  addListToCart(userId: ID, input: [CartInput!]!): [ShopCart!]!
+  """
+  Cập nhật số lượng sản phẩm (variant) trong giỏ hàng
+  """
+  updateCartItem(cartId: ID!, quantity: Int, isChecked: Boolean): [ShopCart!]!
+  removeFromCart(cartId: ID!): [ShopCart!]
+}

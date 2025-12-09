@@ -1,0 +1,21 @@
+# type CheckoutInormation {
+#   order: OrderConnection!
+#   checkoutInfor: CheckoutDetails!
+# }
+
+# type CheckoutItem {
+#   variantId: ID!
+#   quantity: Int!
+#   price: Int!
+# }
+
+# type CheckoutDetails {
+#   totalPrice: Float!
+#   shippingAddress: String!
+#   paymentMethod: String!
+#   orderStatus: String!
+# }
+
+# extend type Query {
+#   checkoutInformation(): CheckoutInormation!
+# }

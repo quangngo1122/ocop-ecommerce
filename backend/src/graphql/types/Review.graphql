@@ -1,0 +1,262 @@
+"""
+Đánh giá sản phẩm
+"""
+type Review {
+  """
+  ID định danh của đánh giá
+  """
+  _id: ID!
+
+  """
+  Sản phẩm được đánh giá
+  """
+  product_id: Product!
+
+  """
+  Người đánh giá
+  """
+  user_id: User!
+
+  """
+  Đơn hàng liên quan
+  """
+  shop_order_id: ShopOrder
+
+  """
+  Số sao đánh giá (1-5)
+  """
+  rating: Int!
+
+  """
+  Nội dung đánh giá
+  """
+  content: String!
+
+  """
+  Phản hồi từ shop
+  """
+  reply: ReviewReply
+
+  """
+  Trạng thái đánh giá
+  """
+  status: ReviewStatus!
+
+  """
+  Thời gian tạo
+  """
+  createdAt: DateTime!
+
+  """
+  Thời gian cập nhật
+  """
+  updatedAt: DateTime!
+}
+
+"""
+Phản hồi đánh giá
+"""
+type ReviewReply {
+  """
+  Người trả lời
+  """
+  user_id: User
+
+  """
+  Nội dung trả lời
+  """
+  content: String
+
+  """
+  Thời gian trả lời
+  """
+  createdAt: DateTime
+}
+
+"""
+Trạng thái đánh giá
+"""
+enum ReviewStatus {
+  """
+  Chờ duyệt
+  """
+  pending
+
+  """
+  Đã duyệt
+  """
+  approved
+
+  """
+  Từ chối
+  """
+  rejected
+}
+
+"""
+Input tạo đánh giá mới
+"""
+input CreateReviewInput {
+  """
+  ID sản phẩm
+  """
+  product_id: ID!
+
+  """
+  ID đơn hàng
+  """
+  shop_order_id: ID!
+
+  """
+  Số sao đánh giá
+  """
+  rating: Int!
+
+  """
+  Nội dung đánh giá
+  """
+  content: String!
+}
+
+"""
+Input cập nhật đánh giá
+"""
+input UpdateReviewInput {
+  """
+  Số sao đánh giá
+  """
+  rating: Int
+
+  """
+  Nội dung đánh giá
+  """
+  content: String
+}
+
+extend type Query {
+  """
+  Lấy chi tiết một đánh giá
+  """
+  review(id: ID!): Review
+
+  reviews(filter: ReviewsFilter, pagination: PaginationInput): ReviewConnection!
+
+  """
+  Danh sách đánh giá theo sản phẩm
+  """
+  productReviews(
+    productId: ID!
+    filter: ReviewFilter
+    pagination: PaginationInput
+  ): ReviewConnection!
+
+  """
+  Danh sách đánh giá của người dùng
+  """
+  userReviews(
+    userId: ID!
+    filter: ReviewFilter
+    pagination: PaginationInput
+  ): ReviewConnection!
+}
+
+input replyToReviewInput {
+  review_id: ID!
+
+  content: String!
+}
+
+extend type Mutation {
+  """
+  Tạo đánh giá mới
+  """
+  createReview(input: [CreateReviewInput]!): Review!
+
+  """
+  Cập nhật đánh giá
+  """
+  updateReview(_id: ID!, input: UpdateReviewInput!): Review!
+
+  """
+  Xóa đánh giá
+  """
+  deleteReview(_id: ID!): Boolean!
+
+  """
+  Phản hồi đánh giá
+  """
+  replyToReview(input: replyToReviewInput!): Review!
+
+  """
+  Cập nhật trạng thái đánh giá
+  """
+  updateReviewStatus(_id: ID!, status: ReviewStatus!): Review!
+}
+
+"""
+Bộ lọc đánh giá
+"""
+input ReviewFilter {
+  """
+  Lọc theo trạng thái
+  """
+  status: ReviewStatus
+
+  """
+  Lọc theo số sao
+  """
+  rating: Int
+
+  """
+  Từ ngày
+  """
+  fromDate: DateTime
+
+  """
+  Đến ngày
+  """
+  toDate: DateTime
+}
+
+input ReviewsFilter {
+  shop_id: ID
+  """
+  Lọc theo trạng thái
+  """
+  status: ReviewStatus
+
+  """
+  Lọc theo số sao
+  """
+  rating: Int
+
+  """
+  Từ ngày
+  """
+  fromDate: DateTime
+
+  """
+  Đến ngày
+  """
+  toDate: DateTime
+}
+
+"""
+Kết nối phân trang đánh giá
+"""
+type ReviewConnection {
+  """
+  Danh sách đánh giá
+  """
+  items: [Review!]!
+
+  """
+  Tổng số đánh giá
+  """
+  total: Int!
+
+  """
+  Còn đánh giá không
+  """
+  hasMore: Boolean!
+}

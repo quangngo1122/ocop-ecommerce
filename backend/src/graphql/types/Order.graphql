@@ -1,0 +1,465 @@
+"""
+Đơn hàng từ nhiều cửa hàng
+"""
+type Order {
+  """
+  ID định danh của đơn hàng
+  """
+  _id: ID!
+
+  """
+  Mã đơn hàng
+  """
+  order_code: String!
+
+  """
+  Người đặt hàng
+  """
+  user_id: User!
+
+  """
+  Danh sách đơn hàng theo từng shop
+  """
+  shopOrders: [ShopOrder!]!
+
+  amounts: Amount!
+
+  """
+  Phương thức thanh toán
+  """
+  payment: Payment!
+
+  """
+  Trạng thái thanh toán
+  """
+  paymentStatus: PaymentStatus!
+
+  """
+  trạng thái đơn hàng
+  """
+  status: String!
+  """
+  Thời gian tạo
+  """
+  createdAt: DateTime!
+
+  """
+  Thời gian cập nhật
+  """
+  updatedAt: DateTime!
+}
+
+type Amount {
+  """
+  Tổng tiền hàng
+  """
+  subtotal: Int!
+
+  """
+  Tổng tiền giảm giá
+  """
+  total_discount: Int!
+
+  """
+  Phí vận chuyển
+  """
+  shippingFee: Int!
+
+  """
+  Tổng tiền thanh toán
+  """
+  total: Int!
+}
+
+type Payment {
+  """
+  Phương thức thanh toán
+  """
+  method: PaymentMethod!
+
+  """
+  Trạng thái thanh toán
+  """
+  status: PaymentStatus!
+
+  """
+  Thông tin giao dịch (nếu có)
+  """
+  transactionId: String
+
+  """
+  Ngày thanh toán
+  """
+  paid_at: DateTime
+}
+
+"""
+Đơn hàng của một cửa hàng
+"""
+type ShopOrder {
+  """
+  ID định danh của đơn hàng shop
+  """
+  _id: ID!
+
+  """
+  Đơn hàng chính
+  """
+  order_id: Order!
+
+  """
+  Cửa hàng
+  """
+  shop_id: Shop!
+
+  """
+  Danh sách sản phẩm
+  """
+  items: [OrderItem!]!
+
+  amounts: Amount!
+
+  """
+  Thông tin vận chuyển
+  """
+  shipping: ShippingInfo!
+
+  """
+  Mã giảm giá đã sử dụng
+  """
+  voucher: Voucher
+
+  """
+  Trạng thái đơn hàng
+  """
+  current_status: String!
+
+  """
+  Lịch sử trạng thái đơn hàng
+  """
+  status_history: [OrderStatusHistory!]!
+
+  """
+  Ghi chú của khách hàng
+  """
+  note: String
+
+  """
+  Thời gian tạo
+  """
+  createdAt: DateTime!
+
+  """
+  Thời gian cập nhật
+  """
+  updatedAt: DateTime!
+}
+
+type OrderStatusHistory {
+  status: String!
+  updatedAt: DateTime!
+}
+
+"""
+Sản phẩm trong đơn hàng
+"""
+type OrderItem {
+  """
+  Biến thể sản phẩm
+  """
+  variant: ProductVariant
+
+  """
+  Số lượng
+  """
+  quantity: Int!
+
+  """
+  Giá bán
+  """
+  price: Int!
+
+  """
+  Tổng tiền
+  """
+  total: Int!
+}
+
+"""
+Thông tin vận chuyển
+"""
+type ShippingInfo {
+  from_address: ShippingInfoAddress!
+  to_address: ShippingInfoAddress!
+}
+
+type ShippingInfoAddress {
+  """
+  Tên người nhận
+  """
+  name: String
+
+  """
+  Số điện thoại
+  """
+  phone: String
+
+  """
+  Địa chỉ chi tiết
+  """
+  address: String
+
+  """
+  Tỉnh/Thành phố
+  """
+  province: String
+
+  """
+  Quận/Huyện
+  """
+  district: String!
+
+  """
+  Phường/Xã
+  """
+  ward: String!
+
+  province_id: Int
+
+  district_id: Int
+
+  ward_code: Int
+}
+
+"""
+Phương thức thanh toán
+"""
+enum PaymentMethod {
+  """
+  Thanh toán khi nhận hàng
+  """
+  cod
+
+  """
+  Thanh toán online
+  """
+  online
+}
+
+"""
+Trạng thái thanh toán
+"""
+enum PaymentStatus {
+  """
+  Chưa thanh toán
+  """
+  pending
+
+  """
+  Đã thanh toán
+  """
+  paid
+
+  """
+  Thanh toán khi nhận hàng
+  """
+  cod
+
+  """
+  Thanh toán thất bại
+  """
+  failed
+}
+
+"""
+Trạng thái đơn hàng
+"""
+enum OrderStatus {
+  """
+  Đang xử lý
+  """
+  active
+
+  """
+  Đã hủy
+  """
+  cancelled
+}
+
+enum ShopOrderStatus {
+  """
+  Chờ xác nhận
+  """
+  pending
+
+  """
+  Đã xác nhận
+  """
+  confirmed
+
+  """
+  Đang chuẩn bị hàng
+  """
+  preparing
+
+  """
+  Đang giao hàng
+  """
+  transit
+
+  """
+  Đã giao hàng
+  """
+  delivered
+
+  """
+  Đơn hàng đã thất bại
+  """
+  failed
+
+  """
+  Đã hủy bởi shop
+  """
+  cancelled_by_shop
+
+  """
+  Đã hủy bởi người mua
+  """
+  cancelled_by_buyer
+}
+
+type CheckoutInfo {
+  address: Address!
+  shopItems: [CheckoutShop!]!
+  orderSummary: CheckoutSummary!
+}
+
+type CheckoutShop {
+  shop: Shop!
+  items: [CheckoutItem!]!
+  voucher: Voucher
+  subtotal: Int!
+  shippingFee: Int!
+  discount: Int!
+  total: Int!
+}
+
+type CheckoutItem {
+  variant: Variant!
+  attributes: [Attribute!]
+  product: Product!
+  quantity: Int!
+  price: Int!
+}
+
+type CheckoutSummary {
+  subtotal: Int!
+  shippingFee: Int!
+  discount: Int!
+  total: Int!
+}
+
+"""
+Input lọc đơn hàng
+"""
+input OrderFilter {
+  """
+  Shop ID để lọc đơn hàng
+  """
+  shopId: ID
+  """
+  Trạng thái đơn hàng
+  """
+  status: OrderStatus
+
+  """
+  Trạng thái thanh toán
+  """
+  paymentStatus: PaymentStatus
+
+  """
+  Từ ngày
+  """
+  fromDate: DateTime
+
+  """
+  Đến ngày
+  """
+  toDate: DateTime
+}
+
+input OrderInput {
+  addressId: ID!
+  shopOrderItems: [ShopOrderItemsInput!]!
+  paymentMethod: PaymentMethod!
+  total: Int!
+}
+input ShopOrderItemsInput {
+  shopId: ID!
+  voucherId: ID
+  orderItems: [OrderItemInput!]!
+}
+input OrderItemInput {
+  variantId: ID!
+  quantity: Int!
+}
+
+input OrderFilterInput {
+  id: ID
+  orderCode: String
+}
+
+input OrdersFilterInput {
+  shopId: ID
+  userId: ID
+  status: OrderStatus
+  paymentStatus: PaymentStatus
+  paymentMethod: PaymentMethod
+  fromDate: DateTime
+  toDate: DateTime
+}
+
+input ShopOrderFilter {
+  id: ID
+}
+
+input ShopOrdersInput {
+  shopId: ID
+  userId: ID
+  status: OrderStatus
+  paymentStatus: PaymentStatus
+  fromDate: DateTime
+  toDate: DateTime
+}
+
+enum PaymentMethod {
+  cod
+  online
+}
+
+enum PaymentStatus {
+  pending
+  confirmed
+  preparing
+  transit
+  delivered
+  failed
+  cancelled_by_shop
+  cancelled_by_buyer
+}
+
+extend type Query {
+  checkout(input: OrderInput!): CheckoutInfo!
+  # Người mua
+  order(filter: OrderFilterInput): Order
+  orders(filter: OrdersFilterInput): [Order!]!
+  # Người bán
+  shopOrder(filter: ShopOrderFilter): [ShopOrder!]!
+  shopOrders(filter: ShopOrdersInput): [ShopOrder!]!
+}
+
+extend type Mutation {
+  createOrder(input: OrderInput!): Order!
+  updateShopOrderStatus(shopOrderId: ID!, status: ShopOrderStatus!): ShopOrder!
+  cancelOrder(orderId: ID!, reason: String): Order!
+}

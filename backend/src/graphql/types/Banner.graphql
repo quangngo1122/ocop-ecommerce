@@ -1,0 +1,49 @@
+type Banner {
+  _id: ID!
+  title: String!
+  image: String!
+  link: String!
+  status: String!
+  createdAt: String!
+}
+
+input CreateBannerInput {
+  title: String!
+  image: Upload!
+  link: String!
+  status: BannerStatus!
+}
+
+enum BannerStatus {
+  active
+  inactive
+}
+
+input UpdateBannerInput {
+  title: String
+  image: Upload
+  link: String
+  status: String
+}
+
+type BannerPagination {
+  items: [Banner!]!
+  total: Int!
+  hasMore: Boolean!
+}
+
+type Query {
+  banners(pagination: PaginationInput): BannerPagination!
+  banner(_id: ID!): Banner
+}
+
+type Mutation {
+  createBanner(input: CreateBannerInput!): Banner!
+  updateBanner(_id: ID!, input: UpdateBannerInput!): Banner!
+  deleteBanner(_id: ID!): Boolean!
+}
+
+input PaginationInput {
+  limit: Int
+  offset: Int
+}

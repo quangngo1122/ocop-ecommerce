@@ -1,0 +1,321 @@
+"""
+Mã giảm giá
+"""
+type Voucher {
+  """
+  ID định danh của voucher
+  """
+  _id: ID!
+
+  """
+  Mã voucher
+  """
+  code: String!
+
+  """
+  Cửa hàng phát hành
+  """
+  shop_id: Shop!
+
+  """
+  Mô tả voucher
+  """
+  description: String
+
+  """
+  Loại giảm giá
+  """
+  type: VoucherType!
+
+  """
+  Giá trị giảm
+  """
+  value: Float!
+
+  """
+  Giảm tối đa
+  """
+  max_discount_amount: Float
+
+  """
+  Giá trị đơn hàng tối thiểu
+  """
+  min_order_value: Float
+
+  """
+  Thời gian bắt đầu
+  """
+  start_date: DateTime!
+
+  """
+  Thời gian kết thúc
+  """
+  end_date: DateTime!
+
+  """
+  Số lượng mã giới hạn
+  """
+  usage_limit: Int!
+
+  """
+  Số lượng đã sử dụng
+  """
+  usage_count: Int!
+
+  """
+  Giới hạn sử dụng/người
+  """
+  usage_limit_per_user: Int!
+
+  """
+  Trạng thái voucher
+  """
+  status: VoucherStatus!
+
+  """
+  Thời gian tạo
+  """
+  created_at: DateTime!
+
+  """
+  Thời gian cập nhật
+  """
+  updated_at: DateTime!
+}
+
+"""
+Loại voucher
+"""
+enum VoucherType {
+  """
+  Giảm theo phần trăm
+  """
+  percentage
+
+  """
+  Giảm số tiền cố định
+  """
+  fixed_amount
+}
+
+"""
+Trạng thái voucher
+"""
+enum VoucherStatus {
+  """
+  Đang hoạt động
+  """
+  active
+
+  """
+  Tạm dừng
+  """
+  paused
+
+  """
+  Hết hạn
+  """
+  expired
+
+  """
+  Đã sử dụng hết
+  """
+  used_up
+}
+
+"""
+Input tạo voucher mới
+"""
+input CreateVoucherInput {
+  """
+  Mã voucher
+  """
+  code: String!
+
+  """
+  Mô tả voucher
+  """
+  description: String
+
+  """
+  Loại giảm giá
+  """
+  type: VoucherType!
+
+  """
+  Giá trị giảm
+  """
+  value: Float!
+
+  """
+  Giảm tối đa
+  """
+  max_discount_amount: Float
+
+  """
+  Giá trị đơn hàng tối thiểu
+  """
+  min_order_value: Float
+
+  """
+  Thời gian bắt đầu
+  """
+  start_date: DateTime!
+
+  """
+  Thời gian kết thúc
+  """
+  end_date: DateTime!
+
+  """
+  Số lượng mã giới hạn
+  """
+  usage_limit: Int!
+
+  """
+  Giới hạn sử dụng/người
+  """
+  usage_limit_per_user: Int!
+}
+
+"""
+Input cập nhật voucher
+"""
+input UpdateVoucherInput {
+  """
+  Mô tả voucher
+  """
+  description: String
+
+  """
+  Giá trị giảm
+  """
+  value: Float
+
+  """
+  Giảm tối đa
+  """
+  max_discount_amount: Float
+
+  """
+  Giá trị đơn hàng tối thiểu
+  """
+  min_order_value: Float
+
+  """
+  Thời gian bắt đầu
+  """
+  start_date: DateTime
+
+  """
+  Thời gian kết thúc
+  """
+  end_date: DateTime
+
+  """
+  Số lượng mã giới hạn
+  """
+  usage_limit: Int
+
+  """
+  Giới hạn sử dụng/người
+  """
+  usage_limit_per_user: Int
+
+  """
+  Trạng thái voucher
+  """
+  status: VoucherStatus
+}
+
+extend type Query {
+  """
+  Lấy chi tiết một voucher
+  """
+  voucher(_id: ID!): Voucher
+
+  """
+  Kiểm tra voucher có hợp lệ không
+  """
+  validateVoucher(code: String!, orderAmount: Float!): Voucher
+
+  """
+  Danh sách voucher của shop
+  """
+  shopVouchers(
+    shopId: ID!
+    filter: VoucherFilter
+    pagination: PaginationInput
+  ): VoucherConnection!
+
+  """
+  Danh sách voucher khả dụng cho đơn hàng
+  """
+  availableVouchers(
+    shopId: ID!
+    orderAmount: Float!
+    pagination: PaginationInput
+  ): VoucherConnection!
+}
+
+extend type Mutation {
+  """
+  Tạo voucher mới
+  """
+  createVoucher(input: CreateVoucherInput!): Voucher!
+
+  """
+  Cập nhật voucher
+  """
+  updateVoucher(_id: ID!, input: UpdateVoucherInput!): Voucher!
+
+  """
+  Xóa voucher
+  """
+  deleteVoucher(_id: ID!): Boolean!
+}
+
+"""
+Bộ lọc voucher
+"""
+input VoucherFilter {
+  """
+  Lọc theo trạng thái
+  """
+  status: VoucherStatus
+
+  """
+  Lọc theo loại
+  """
+  type: VoucherType
+
+  """
+  Từ ngày
+  """
+  fromDate: DateTime
+
+  """
+  Đến ngày
+  """
+  toDate: DateTime
+}
+
+"""
+Kết nối phân trang voucher
+"""
+type VoucherConnection {
+  """
+  Danh sách voucher
+  """
+  items: [Voucher!]!
+
+  """
+  Tổng số voucher
+  """
+  total: Int!
+
+  """
+  Còn voucher không
+  """
+  hasMore: Boolean!
+}

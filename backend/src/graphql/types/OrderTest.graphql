@@ -1,0 +1,574 @@
+# """
+# Đơn hàng từ nhiều cửa hàng
+# """
+# type Order {
+#   """
+#   ID định danh của đơn hàng
+#   """
+#   _id: ID!
+
+#   """
+#   Mã đơn hàng
+#   """
+#   order_code: String!
+
+#   """
+#   Người đặt hàng
+#   """
+#   user_id: User!
+
+#   """
+#   Danh sách đơn hàng theo từng shop
+#   """
+#   shopOrders: [ShopOrder!]!
+
+#   amounts: Amount!
+
+#   """
+#   Phương thức thanh toán
+#   """
+#   payment: Payment!
+
+#   """
+#   Trạng thái thanh toán
+#   """
+#   paymentStatus: PaymentStatus!
+
+#   """
+#   trạng thái đơn hàng
+#   """
+#   status: String!
+#   """
+#   Thời gian tạo
+#   """
+#   createdAt: DateTime!
+
+#   """
+#   Thời gian cập nhật
+#   """
+#   updatedAt: DateTime!
+# }
+
+# type Amount {
+#   """
+#   Tổng tiền hàng
+#   """
+#   subtotal: Int!
+
+#   """
+#   Tổng tiền giảm giá
+#   """
+#   total_discount: Float!
+
+#   """
+#   Phí vận chuyển
+#   """
+#   shippingFee: Float!
+
+#   """
+#   Tổng tiền thanh toán
+#   """
+#   total: Float!
+# }
+
+# type Payment {
+#   """
+#   Phương thức thanh toán
+#   """
+#   method: PaymentMethod!
+
+#   """
+#   Trạng thái thanh toán
+#   """
+#   status: PaymentStatus!
+
+#   """
+#   Thông tin giao dịch (nếu có)
+#   """
+#   transactionId: String
+
+#   """
+#   Ngày thanh toán
+#   """
+#   paid_at: DateTime
+# }
+
+# """
+# Đơn hàng của một cửa hàng
+# """
+# type ShopOrder {
+#   """
+#   ID định danh của đơn hàng shop
+#   """
+#   _id: ID!
+
+#   """
+#   Đơn hàng chính
+#   """
+#   order_id: Order!
+
+#   """
+#   Cửa hàng
+#   """
+#   shop_id: Shop!
+
+#   """
+#   Danh sách sản phẩm
+#   """
+#   items: [OrderItem!]!
+
+#   amounts: Amount!
+
+#   """
+#   Tổng tiền giảm giá
+#   """
+#   discount: Float!
+
+#   """
+#   Thông tin vận chuyển
+#   """
+#   shipping: ShippingInfo!
+
+#   """
+#   Mã giảm giá đã sử dụng
+#   """
+#   voucher: Voucher
+
+#   """
+#   Trạng thái đơn hàng
+#   """
+#   current_status: String!
+
+#   """
+#   Lịch sử trạng thái đơn hàng
+#   """
+#   status_history: [OrderStatusHistory!]!
+
+#   """
+#   Ghi chú của khách hàng
+#   """
+#   note: String
+
+#   """
+#   Thời gian tạo
+#   """
+#   createdAt: DateTime!
+
+#   """
+#   Thời gian cập nhật
+#   """
+#   updatedAt: DateTime!
+# }
+
+# type OrderStatusHistory {
+#   status: String!
+#   updatedAt: DateTime!
+# }
+
+# """
+# Sản phẩm trong đơn hàng
+# """
+# type OrderItem {
+#   """
+#   Biến thể sản phẩm
+#   """
+#   variant: ProductVariant
+
+#   """
+#   Số lượng
+#   """
+#   quantity: Int!
+
+#   """
+#   Giá bán
+#   """
+#   price: Float!
+
+#   """
+#   Tổng tiền
+#   """
+#   total: Float!
+# }
+
+# """
+# Thông tin vận chuyển
+# """
+# type ShippingInfo {
+#   from_address: ShippingInfoAddress!
+#   to_address: ShippingInfoAddress!
+# }
+
+# type ShippingInfoAddress {
+#   """
+#   Tên người nhận
+#   """
+#   name: String
+
+#   """
+#   Số điện thoại
+#   """
+#   phone: String
+
+#   """
+#   Địa chỉ chi tiết
+#   """
+#   address: String
+
+#   """
+#   Tỉnh/Thành phố
+#   """
+#   province: String
+
+#   """
+#   Quận/Huyện
+#   """
+#   district: String!
+
+#   """
+#   Phường/Xã
+#   """
+#   ward: String!
+
+#   province_id: Int
+
+#   district_id: Int
+
+#   ward_code: Int
+# }
+
+# """
+# Phương thức thanh toán
+# """
+# enum PaymentMethod {
+#   """
+#   Thanh toán khi nhận hàng
+#   """
+#   cod
+
+#   """
+#   Thanh toán qua ví điện tử
+#   """
+#   e_wallet
+
+#   """
+#   Thanh toán qua thẻ ngân hàng
+#   """
+#   bank_card
+# }
+
+# """
+# Trạng thái thanh toán
+# """
+# enum PaymentStatus {
+#   """
+#   Chưa thanh toán
+#   """
+#   pending
+
+#   """
+#   Đã thanh toán
+#   """
+#   paid
+
+#   """
+#   Thanh toán thất bại
+#   """
+#   failed
+
+#   """
+#   Đã hoàn tiền
+#   """
+#   refunded
+# }
+
+# """
+# Trạng thái đơn hàng
+# """
+# enum OrderStatus {
+#   """
+#   Chờ xác nhận
+#   """
+#   pending
+
+#   """
+#   Đã xác nhận
+#   """
+#   confirmed
+
+#   """
+#   Đang chuẩn bị hàng
+#   """
+#   preparing
+
+#   """
+#   Đang giao hàng
+#   """
+#   transit
+
+#   """
+#   Đã giao hàng
+#   """
+#   delivered
+
+#   """
+#   Đơn hàng đã thất bại
+#   """
+#   failed
+
+#   """
+#   Đã hủy bởi shop
+#   """
+#   cancelled_by_shop
+
+#   """
+#   Đã hủy bởi người mua
+#   """
+#   cancelled_by_buyer
+# }
+
+# """
+# Input tạo đơn hàng mới
+# """
+# input CreateOrderInput {
+#   """
+#   Danh sách đơn hàng theo shop
+#   """
+#   shopOrders: [CreateShopOrderInput!]!
+
+#   """
+#   Phương thức thanh toán
+#   """
+#   paymentMethod: PaymentMethod!
+# }
+
+# """
+# Input tạo đơn hàng cho shop
+# """
+# input CreateShopOrderInput {
+#   """
+#   ID shop
+#   """
+#   shopId: ID!
+
+#   """
+#   Danh sách sản phẩm
+#   """
+#   items: [OrderItemInput!]!
+
+#   """
+#   Thông tin giao hàng
+#   """
+#   shipping: ShippingInfoInput!
+
+#   """
+#   Mã giảm giá (nếu có)
+#   """
+#   voucherCode: String
+
+#   """
+#   Ghi chú
+#   """
+#   note: String
+# }
+
+# """
+# Input thông tin sản phẩm trong đơn hàng
+# """
+# input OrderItemInput {
+#   """
+#   ID sản phẩm
+#   """
+#   productId: ID!
+
+#   """
+#   ID biến thể (nếu có)
+#   """
+#   variantId: ID
+
+#   """
+#   Số lượng
+#   """
+#   quantity: Int!
+# }
+
+# """
+# Input thông tin giao hàng
+# """
+# input ShippingInfoInput {
+#   """
+#   Tên người nhận
+#   """
+#   fullName: String!
+
+#   """
+#   Số điện thoại
+#   """
+#   phone: String!
+
+#   """
+#   Địa chỉ chi tiết
+#   """
+#   address: String!
+
+#   """
+#   Tỉnh/Thành phố
+#   """
+#   province: String!
+
+#   """
+#   Quận/Huyện
+#   """
+#   district: String!
+
+#   """
+#   Phường/Xã
+#   """
+#   ward: String!
+
+#   """
+#   Ghi chú giao hàng
+#   """
+#   note: String
+# }
+
+# """
+# Input lọc đơn hàng
+# """
+# input OrderFilter {
+#   """
+#   Shop ID để lọc đơn hàng
+#   """
+#   shopId: ID
+#   """
+#   Trạng thái đơn hàng
+#   """
+#   status: OrderStatus
+
+#   """
+#   Trạng thái thanh toán
+#   """
+#   paymentStatus: PaymentStatus
+
+#   """
+#   Từ ngày
+#   """
+#   fromDate: DateTime
+
+#   """
+#   Đến ngày
+#   """
+#   toDate: DateTime
+# }
+
+# input ShopOrderFilter {
+#   """
+#   Shop ID để lọc đơn hàng
+#   """
+#   shopId: ID
+#   """
+#   Trạng thái đơn hàng
+#   """
+#   status: OrderStatus
+
+#   """
+#   Trạng thái thanh toán
+#   """
+#   paymentStatus: PaymentStatus
+
+#   """
+#   Từ ngày
+#   """
+#   fromDate: DateTime
+
+#   """
+#   Đến ngày
+#   """
+#   toDate: DateTime
+# }
+
+# extend type Query {
+#   """
+#   Lấy chi tiết đơn hàng
+#   """
+#   order(_id: ID!): Order
+
+#   """
+#   Lấy chi tiết đơn hàng shop
+#   """
+#   shopOrder(_id: ID!): ShopOrder
+
+#   """
+#   Danh sách đơn hàng của người dùng
+#   """
+#   myOrders(filter: OrderFilter, pagination: PaginationInput): OrderConnection!
+
+#   """
+#   Danh sách đơn hàng của shop
+#   """
+#   shopOrders(
+#     filter: ShopOrderFilter
+#     pagination: PaginationInput
+#   ): ShopOrderConnection!
+
+#   myShopOrders(
+#     filter: OrderFilter
+#     pagination: PaginationInput
+#   ): ShopOrderConnection!
+# }
+
+# extend type Mutation {
+#   """
+#   Tạo đơn hàng mới
+#   """
+#   createOrder(input: CreateOrderInput!): Order!
+
+#   """
+#   Cập nhật trạng thái đơn hàng shop
+#   """
+#   updateShopOrderStatus(shopOrderId: ID!, status: OrderStatus!): ShopOrder!
+
+#   """
+#   Hủy đơn hàng shop
+#   """
+#   cancelShopOrder(_id: ID!, reason: String!): ShopOrder!
+# }
+
+# """
+# Kết nối phân trang đơn hàng
+# """
+# type OrderConnection {
+#   """
+#   Danh sách đơn hàng
+#   """
+#   items: [Order!]!
+
+#   """
+#   Tổng số đơn hàng
+#   """
+#   total: Int!
+
+#   """
+#   Còn đơn hàng không
+#   """
+#   hasMore: Boolean!
+# }
+
+# """
+# Kết nối phân trang đơn hàng shop
+# """
+# type ShopOrderConnection {
+#   """
+#   Danh sách đơn hàng shop
+#   """
+#   items: [ShopOrder!]!
+
+#   """
+#   Tổng số đơn hàng
+#   """
+#   total: Int!
+
+#   """
+#   Còn đơn hàng không
+#   """
+#   hasMore: Boolean!
+# }

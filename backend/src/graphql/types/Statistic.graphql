@@ -1,0 +1,32 @@
+type OrderStatistics {
+  totalOrders: Int!
+  totalOrdersByShop: [OrdersByShop!]!
+  totalRevenue: Float!
+  netRevenue: Float!
+  totalDiscount: Float!
+  completionRate: Float!
+  productSales: [ProductSales!]!
+  topSellingProducts: [ProductSales!]!
+  topRevenueProducts: [ProductRevenue!]!
+}
+
+type OrdersByShop {
+  shop_id: ID!
+  totalOrders: Int!
+}
+
+type ProductSales {
+  product_id: ID!
+  name: String
+  totalQuantity: Int!
+}
+
+type ProductRevenue {
+  product_id: ID!
+  name: String
+  totalRevenue: Float!
+}
+
+extend type Query {
+  getStatistics(fromDate: String, toDate: String, shopId: ID): OrderStatistics!
+}

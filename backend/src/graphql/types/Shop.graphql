@@ -1,0 +1,180 @@
+type Shop {
+  _id: ID!
+  name: String!
+  slug: String!
+  description: String
+  owner: User!
+  logo: String
+  coverImage: String
+  address: Address
+  contact: Contact
+  status: ShopStatus!
+  rating: Rating!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  businessLicense: [BusinessLicense!]!
+
+  products: [Product!]
+  vouchers: [Voucher!]
+}
+
+type BusinessLicense {
+  _id: ID!
+  name: String!
+  code: String!
+  description: String
+  images: [String!]!
+}
+
+type Address {
+  name: String
+  phone: String
+  province: String
+  district: String
+  ward: String
+  province_id: Int
+  district_id: Int
+  ward_code: Int
+  isDefault: Boolean
+}
+
+type Contact {
+  email: String!
+  phone: String
+  website: String
+}
+
+"""
+Trạng thái của cửa hàng
+"""
+enum ShopStatus {
+  """
+  Cửa hàng đang hoạt động
+  """
+  active
+  """
+  Cửa hàng bị cấm hoạt động
+  """
+  suspended
+  """
+  Cửa hàng đang chờ duyệt
+  """
+  pending
+  """
+  Cửa hàng đã đóng
+  """
+  closed
+  """
+  Cửa hàng đã bị khóa
+  """
+  locked
+}
+
+type ShopConnection {
+  items: [Shop!]!
+  total: Int!
+  hasMore: Boolean!
+}
+
+input ShopsFilter {
+  status: ShopStatus
+  search: String
+}
+
+input CreateShopInput {
+  name: String!
+  description: String
+  logo: Upload!
+  coverImage: Upload!
+  address: ShopAddressInput
+  contact: ContactInput!
+  businessLicense: [AddBusinessLicenseInput!]
+}
+
+input UpdateShopInput {
+  name: String
+  description: String
+  logo: Upload
+  address: ShopAddressInput
+  contact: ContactInput
+  status: ShopStatus
+  coverImage: Upload
+}
+
+input ShopAddressInput {
+  name: String
+  phone: String
+  address: String
+  province: String
+  district: String
+  ward: String
+  province_id: Int
+  district_id: Int
+  ward_code: Int
+}
+
+input ContactInput {
+  email: String!
+  phone: String!
+  website: String
+  facebook: String
+  instagram: String
+  zalo: String
+}
+
+input BusinessLicenseImageInput {
+  imageUrl: Upload!
+}
+
+input BusinessLicenseInput {
+  """
+  tên giấy phép kinh doanh
+  """
+  name: String
+  """
+  mã số giấy phép kinh doanh
+  """
+  code: String
+  description: String
+  images: [Upload!]
+}
+
+input AddBusinessLicenseInput {
+  """
+  tên giấy phép kinh doanh
+  """
+  name: String!
+  """
+  mã số giấy phép kinh doanh
+  """
+  code: String!
+  description: String
+  images: [Upload!]!
+}
+
+input ShopFilter {
+  _id: ID
+  owner: ID
+}
+
+type Query {
+  shop(filter: ShopFilter!): Shop!
+  myShop: Shop!
+  shops(filter: ShopsFilter, pagination: PaginationInput): ShopConnection!
+}
+
+type Mutation {
+  # createShop(input: CreateShopInput!): Shop!
+  updateShop(_id: ID!, input: UpdateShopInput!): Shop!
+  deleteShop(_id: ID!): Boolean!
+  updateShopStatus(updateShopStatusId: ID!, status: ShopStatus!): Shop!
+  addBusinessLicense(
+    shopId: ID!
+    businessLicense: AddBusinessLicenseInput!
+  ): Shop!
+  updateBusinessLicense(
+    businessLicenseId: ID!
+    businessLicense: BusinessLicenseInput!
+  ): Shop!
+  deleteBusinessLicense(shopId: ID!, businessLicenseId: ID!): Shop!
+}
