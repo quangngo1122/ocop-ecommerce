@@ -47,51 +47,59 @@ export default function BestSellingProductsChart({
         </button>
       </div>
       {expanded && (
-        <div className="h-[300px] flex">
-          <div className="flex-1">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={data}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={({ name, percent }) => ` ${percent}%`}
-                  outerRadius={100}
-                  fill="#8884d8"
-                  dataKey="value"
-                >
-                  {data.map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
-                  ))}
-                </Pie>
-                <Tooltip formatter={(value) => `${value} sản phẩm`} />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="w-1/3 pl-4 overflow-y-auto">
-            {data.map((item, index) => (
-              <div key={index} className="flex items-center mb-2">
-                <div
-                  style={{
-                    width: "15px",
-                    height: "15px",
-                    backgroundColor: COLORS[index % COLORS.length],
-                    marginRight: "8px",
-                  }}
-                ></div>
-                <span className="text-sm">
-                  {item.name.length > 20
-                    ? item.name.slice(0, 20) + "..."
-                    : item.name}{" "}
-                  ({item.percent}%)
-                </span>
+        <div>
+          {data.length > 0 ? (
+            <div className="h-[300px] flex">
+              <div className="flex-1">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={data}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={({ name, percent }) => ` ${percent}%`}
+                      outerRadius={100}
+                      fill="#8884d8"
+                      dataKey="value"
+                    >
+                      {data.map((entry, index) => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={COLORS[index % COLORS.length]}
+                        />
+                      ))}
+                    </Pie>
+                    <Tooltip formatter={(value) => `${value} sản phẩm`} />
+                  </PieChart>
+                </ResponsiveContainer>
               </div>
-            ))}
-          </div>
+              <div className="w-1/3 pl-4 overflow-y-auto">
+                {data.map((item, index) => (
+                  <div key={index} className="flex items-center mb-2">
+                    <div
+                      style={{
+                        width: "15px",
+                        height: "15px",
+                        backgroundColor: COLORS[index % COLORS.length],
+                        marginRight: "8px",
+                      }}
+                    ></div>
+                    <span className="text-sm">
+                      {item.name.length > 20
+                        ? item.name.slice(0, 20) + "..."
+                        : item.name}{" "}
+                      ({item.percent}%)
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="bg-white p-6  text-center text-gray-500">
+              Không có dữ liệu để hiển thị
+            </div>
+          )}
         </div>
       )}
     </div>

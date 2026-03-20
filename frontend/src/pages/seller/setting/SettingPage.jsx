@@ -5,6 +5,9 @@ import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
 import { AuthContext } from "../../../contexts/AuthProvider";
 import { useToast } from "../../../contexts/ToastProvider";
+import FormInput from "../../../components/seller/form/FormInput";
+import FileUploader from "../../../components/seller/form/FileUploaderSettingShop";
+import AddressSelector from "../../../components/seller/form/AddressSelector";
 
 const GHN_API_BASE_URL = import.meta.env.VITE_GHN_API_BASE_URL;
 const GHN_API_TOKEN = import.meta.env.VITE_GHN_API_TOKEN;
@@ -261,7 +264,7 @@ export default function SettingPage() {
   const handleProvinceChange = (e) => {
     const provinceId = e.target.value;
     const provinceObj = provinces.find(
-      (p) => String(p.ProvinceID) === String(provinceId)
+      (p) => String(p.ProvinceID) === String(provinceId),
     );
     setFormData((prev) => ({
       ...prev,
@@ -285,7 +288,7 @@ export default function SettingPage() {
   const handleDistrictChange = (e) => {
     const districtId = e.target.value;
     const districtObj = districts.find(
-      (d) => String(d.DistrictID) === String(districtId)
+      (d) => String(d.DistrictID) === String(districtId),
     );
     setFormData((prev) => ({
       ...prev,
@@ -644,68 +647,26 @@ export default function SettingPage() {
 
         {isConfigInfoExpanded && (
           <form onSubmit={handleSubmit} className="p-6 space-y-6">
-            <div className="grid grid-cols-3 items-center border-b border-gray-200 py-3 mb-0">
-              <label
-                htmlFor="storeName"
-                className="text-sm font-medium text-gray-700 col-span-1"
-              >
-                Tên Cơ Sở<span className="text-red-500">*</span>
-              </label>
-              <div className="col-span-2">
-                <input
-                  type="text"
-                  id="storeName"
-                  name="storeName"
-                  value={formData.storeName}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-                />
-              </div>
-            </div>
-            <div className="grid grid-cols-3 items-center border-b border-gray-200 py-3 mb-0">
-              <label
-                htmlFor="logoFile"
-                className="text-sm font-medium text-gray-700 col-span-1"
-              >
-                Logo Cửa Hàng<span className="text-red-500">*</span>
-              </label>
-              <div className="col-span-2 flex items-center">
-                <div>
-                  <input
-                    type="file"
-                    id="logoFile"
-                    name="logoFile"
-                    ref={fileInputRef}
-                    onChange={handleFileChange}
-                    className="hidden"
-                  />
-                  <button
-                    type="button"
-                    onClick={handleChooseFileClick}
-                    className=" cursor-pointer px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                  >
-                    Chọn tệp
-                  </button>
-                  <span className="ml-3 text-sm text-gray-500">
-                    {formData.logoFileName}
-                  </span>
-
-                  {formData.logoPreview ? (
-                    <img
-                      src={formData.logoPreview}
-                      alt="Logo preview"
-                      className="h-32 rounded border border-gray-200 shadow mt-1"
-                    />
-                  ) : myShop.logo ? (
-                    <img
-                      src={myShop.logo}
-                      alt="Logo hiện tại"
-                      className="h-32 rounded border border-gray-200 shadow mt-1"
-                    />
-                  ) : null}
-                </div>
-              </div>
-            </div>
+            <FormInput
+              label="Tên Cơ Sở"
+              id="storeName"
+              name="storeName"
+              value={formData.storeName}
+              onChange={handleChange}
+              required
+            />
+            <FileUploader
+              label="Logo Cửa Hàng"
+              id="logoFile"
+              name="logoFile"
+              fileRef={fileInputRef}
+              onFileChange={handleFileChange}
+              onChooseFileClick={handleChooseFileClick}
+              fileName={formData.logoFileName}
+              preview={formData.logoPreview}
+              existingImage={myShop.logo}
+              required
+            />
 
             <div className="grid grid-cols-3 items-center border-b border-gray-200 py-3 mb-0">
               <label
@@ -752,143 +713,43 @@ export default function SettingPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-3 items-center border-b border-gray-200 py-3 mb-0">
-              <label className="text-sm font-medium text-gray-700 col-span-1">
-                Địa chỉ<span className="text-red-500">*</span>
-              </label>
-              <div className="col-span-2 grid grid-cols-1 md:grid-cols-1 gap-2">
-                <span className="text-sm text-gray-500 mb-2">
-                  Nhập địa chỉ bổ xung:
-                </span>
-                <input
-                  type="text"
-                  name="address"
-                  value={formData.address}
-                  onChange={handleChange}
-                  placeholder="Số nhà, tên đường..."
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 mb-2 md:mb-0"
-                />
-                <span className="text-sm text-gray-500 mb-2">
-                  Chọn địa chỉ:
-                </span>
-                <select
-                  value={formData.provinceId}
-                  onChange={handleProvinceChange}
-                  className=" hover:border-blue-400  cursor-pointer w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-                  required
-                >
-                  <option value="">Chọn tỉnh/thành</option>
-                  {provinces.map((province) => (
-                    <option
-                      key={province.ProvinceID}
-                      value={province.ProvinceID}
-                    >
-                      {province.ProvinceName}
-                    </option>
-                  ))}
-                </select>
-                <select
-                  value={formData.districtId}
-                  onChange={handleDistrictChange}
-                  className={` hover:border-blue-400  cursor-pointer w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 ${
-                    !formData.provinceId
-                      ? "opacity-50 border-gray-400 cursor-not-allowed"
-                      : ""
-                  }`}
-                  required
-                  title={`${
-                    !formData.provinceId ? "Vui lòng chọn tỉnh/thành trước" : ""
-                  }`}
-                  disabled={!formData.provinceId}
-                >
-                  <option value="">Chọn quận/huyện</option>
-                  {districts.map((district) => (
-                    <option
-                      key={district.DistrictID}
-                      value={district.DistrictID}
-                    >
-                      {district.DistrictName}
-                    </option>
-                  ))}
-                </select>
-                <select
-                  value={formData.wardCode}
-                  onChange={handleWardChange}
-                  className={` hover:border-blue-400  cursor-pointer w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 ${
-                    !formData.districtId
-                      ? "opacity-50 border-gray-400 cursor-not-allowed"
-                      : ""
-                  }`}
-                  required
-                  title={`${
-                    !formData.district ? "Vui lòng chọn huận huyện trước" : ""
-                  }`}
-                  disabled={!formData.districtId}
-                >
-                  <option value="">Chọn phường/xã</option>
-                  {wards.map((ward) => (
-                    <option key={ward.WardCode} value={ward.WardCode}>
-                      {ward.WardName}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            <div className="grid grid-cols-3 items-center border-b border-gray-200 py-3 mb-0">
-              <label
-                htmlFor="shopAddressName"
-                className="text-sm font-medium text-gray-700 col-span-1"
-              >
-                Tên Liên Hệ<span className="text-red-500">*</span>
-              </label>
-              <div className="col-span-2">
-                <input
-                  type="text"
-                  id="shopAddressName"
-                  name="shopAddressName"
-                  value={formData.shopAddressName}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-                  placeholder="Nhập tên liên hệ (ví dụ: Nguyễn văn A)"
-                />
-              </div>
-            </div>
-            <div className="grid grid-cols-3 items-center border-b border-gray-200 py-3 mb-0">
-              <label
-                htmlFor="phoneNumber"
-                className="text-sm font-medium text-gray-700 col-span-1"
-              >
-                Số điện thoại<span className="text-red-500">*</span>
-              </label>
-              <div className="col-span-2">
-                <input
-                  type="text"
-                  id="phoneNumber"
-                  name="phoneNumber"
-                  value={formData.phoneNumber}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-                />
-              </div>
-            </div>
-            <div className="grid grid-cols-3 items-center border-b border-gray-200 py-3 mb-0">
-              <label
-                htmlFor="contactEmail"
-                className="text-sm font-medium text-gray-700 col-span-1"
-              >
-                Email Liên Hệ<span className="text-red-500">*</span>
-              </label>
-              <div className="col-span-2">
-                <input
-                  type="email"
-                  id="contactEmail"
-                  name="contactEmail"
-                  value={formData.contactEmail}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-                />
-              </div>
-            </div>
+            <AddressSelector
+              formData={formData}
+              provinces={provinces}
+              districts={districts}
+              wards={wards}
+              handleProvinceChange={handleProvinceChange}
+              handleDistrictChange={handleDistrictChange}
+              handleWardChange={handleWardChange}
+              loading={loading}
+            />
+
+            <FormInput
+              label="Tên Liên Hệ"
+              id="shopAddressName"
+              name="shopAddressName"
+              value={formData.shopAddressName}
+              onChange={handleChange}
+              placeholder="Nhập tên liên hệ (ví dụ: Nguyễn Văn A)"
+              required
+            />
+            <FormInput
+              label="Số điện thoại"
+              id="phoneNumber"
+              name="phoneNumber"
+              value={formData.phoneNumber}
+              onChange={handleChange}
+              required
+            />
+            <FormInput
+              label="Email Liên Hệ"
+              id="contactEmail"
+              name="contactEmail"
+              value={formData.contactEmail}
+              onChange={handleChange}
+              type="email"
+              required
+            />
 
             <div className="grid grid-cols-3 items-center border-b border-gray-200 py-4 mb-0">
               <label
@@ -921,26 +782,18 @@ export default function SettingPage() {
                 </label>
               </div>
             </div>
-            <div className="grid grid-cols-3 items-center py-3 ">
-              <label
-                htmlFor="description"
-                className="text-sm font-medium text-gray-700 col-span-1"
-              >
-                Giới Thiệu<span className="text-red-500">*</span>
-              </label>
-              <div className="col-span-2">
-                <textarea
-                  id="description"
-                  name="description"
-                  value={formData.description}
-                  onChange={handleChange}
-                  rows="4"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-                ></textarea>
-              </div>
-            </div>
 
-            <div className="border-t border-gray-200 p-6 flex justify-end">
+            <FormInput
+              label="Giới Thiệu"
+              id="description"
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              isTextarea
+              required
+            />
+            {/* <div className="border-t border-gray-200 p-6 flex justify-end"> */}
+            <div className="mt-3 p-6 flex justify-end">
               <button
                 type="submit"
                 className=" cursor-pointer px-6 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
