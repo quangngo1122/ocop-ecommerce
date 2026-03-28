@@ -2,6 +2,8 @@
 frontend/node_modules/
 backend/node_modules/
 
+.env
+
 # build output
 frontend/dist/
 backend/build/
