@@ -7,7 +7,7 @@ import { createClient } from "graphql-ws";
 import createUploadLink from "apollo-upload-client/createUploadLink.mjs";
 
 const uploadLink = createUploadLink({
-  uri: "http://localhost:4000/graphql",
+  uri: `${import.meta.env.VITE_GRAPHQL_HTTP_URL}/graphql`,
   // uri: "/api/graphql",
   headers: {
     "apollo-require-preflight": "true",
@@ -63,7 +63,7 @@ const wsLink = new GraphQLWsLink(
         Authorization: `Bearer ${token}`,
       };
     },
-  })
+  }),
 );
 
 // Split links based on operation type
@@ -76,7 +76,7 @@ const splitLink = split(
     );
   },
   wsLink,
-  authLink.concat(uploadLink)
+  authLink.concat(uploadLink),
 );
 
 // Tạo Apollo Client
