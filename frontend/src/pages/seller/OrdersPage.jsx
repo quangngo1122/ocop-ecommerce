@@ -144,7 +144,9 @@ export default function OrdersPage() {
   // const { data, loading, error } = useQuery(MY_SHOP_ORDERS_QUERY);
   const { data, loading, error } = useQuery(MY_SHOP_ORDERS_QUERY, {
     variables: { filter: { shopId } },
-    fetchPolicy: "network-only",
+    // fetchPolicy: "network-only",
+    fetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-first",
   });
   const [getUser] = useLazyQuery(USER_QUERY);
   const [userCache, setUserCache] = useState({});
@@ -202,7 +204,7 @@ export default function OrdersPage() {
       ...new Set(
         orders
           .map((order) => order.order_id?.user_id?._id)
-          .filter((id) => id && !userCache[id])
+          .filter((id) => id && !userCache[id]),
       ),
     ];
     userIds.forEach((id) => {
@@ -248,7 +250,7 @@ export default function OrdersPage() {
   const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
   const paginatedOrders = filteredOrders.slice(
     (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+    currentPage * itemsPerPage,
   );
 
   const goToPage = (page) => {
@@ -320,8 +322,8 @@ export default function OrdersPage() {
                 row.order_id?.payment?.status === "pending"
                   ? "Chưa thanh toán"
                   : row.order_id?.payment?.status === "paid"
-                  ? "Đã thanh toán"
-                  : row.order_id?.payment?.status,
+                    ? "Đã thanh toán"
+                    : row.order_id?.payment?.status,
             },
             {
               label: "Trạng thái",
@@ -511,29 +513,29 @@ export default function OrdersPage() {
                               order.order_id?.payment?.status === "pending"
                                 ? "text-red-500"
                                 : order.order_id?.payment?.status === "cod"
-                                ? "text-orange-500"
-                                : order.order_id?.payment?.status === "paid"
-                                ? "text-green-500"
-                                : "text-red-500"
+                                  ? "text-orange-500"
+                                  : order.order_id?.payment?.status === "paid"
+                                    ? "text-green-500"
+                                    : "text-red-500"
                             }`}
                           >
                             {order.order_id?.payment?.status === "pending"
                               ? "Chưa thanh toán"
                               : order.order_id?.payment?.status === "paid"
-                              ? "Đã thanh toán"
-                              : order.order_id?.payment?.status === "cod"
-                              ? "Trả trực tiếp"
-                              : order.order_id?.payment?.status}
+                                ? "Đã thanh toán"
+                                : order.order_id?.payment?.status === "cod"
+                                  ? "Trả trực tiếp"
+                                  : order.order_id?.payment?.status}
                           </span>
                         </td>
                         <td className="whitespace-nowrap px-1 py-2 text-center border-gray-300 border">
                           <span
                             className={`px-2 py-1 rounded-full text-xs ${getStatusColor(
-                              order.current_status
+                              order.current_status,
                             )}`}
                           >
                             {statusOptions.find(
-                              (opt) => opt.value === order.current_status
+                              (opt) => opt.value === order.current_status,
                             )?.label || order.current_status}
                           </span>
                         </td>
@@ -635,10 +637,10 @@ export default function OrdersPage() {
                           order.order_id?.payment?.status === "pending"
                             ? "text-red-500"
                             : order.order_id?.payment?.status === "cod"
-                            ? "text-orange-500"
-                            : order.order_id?.payment?.status === "paid"
-                            ? "text-green-500"
-                            : "text-red-500"
+                              ? "text-orange-500"
+                              : order.order_id?.payment?.status === "paid"
+                                ? "text-green-500"
+                                : "text-red-500"
                         }`}
                       >
                         {" "}
@@ -646,10 +648,10 @@ export default function OrdersPage() {
                         {order.order_id?.payment?.status === "pending"
                           ? "Chưa thanh toán"
                           : order.order_id?.payment?.status === "paid"
-                          ? "Đã thanh toán"
-                          : order.order_id?.payment?.status === "cod"
-                          ? "Trả trực tiếp"
-                          : order.order_id?.payment?.status}
+                            ? "Đã thanh toán"
+                            : order.order_id?.payment?.status === "cod"
+                              ? "Trả trực tiếp"
+                              : order.order_id?.payment?.status}
                         )
                       </span>
                     </p>
@@ -658,11 +660,11 @@ export default function OrdersPage() {
                         Trạng Thái Đơn:
                         <span
                           className={`px-2 py-1 rounded-full text-xs ml-2 ${getStatusColor(
-                            order.current_status
+                            order.current_status,
                           )}`}
                         >
                           {statusOptions.find(
-                            (opt) => opt.value === order.current_status
+                            (opt) => opt.value === order.current_status,
                           )?.label || order.current_status}
                         </span>
                       </p>

@@ -15,6 +15,7 @@ import { AuthContext } from "../../contexts/AuthProvider";
 import { signOut } from "firebase/auth";
 import { auth } from "../../config/firebase.config";
 import { useToast } from "../../contexts/ToastProvider";
+import { LockOpenIcon } from "lucide-react";
 
 // -----------------------GRAPHQL-----------------------
 const SHOPS_QUERY = gql`
@@ -43,7 +44,7 @@ export default function SellerSidebar({ collapsed = false, toggleSidebar }) {
   const location = useLocation();
   const { data: shopsData } = useQuery(SHOPS_QUERY);
   const myShop = shopsData?.shops?.items?.find(
-    (shop) => shop.owner?._id === userId
+    (shop) => shop.owner?._id === userId,
   );
   const { showToast } = useToast();
 
@@ -138,12 +139,12 @@ export default function SellerSidebar({ collapsed = false, toggleSidebar }) {
           label: "Hồ Sơ",
           show: true,
         },
-        // {
-        //   path: "/seller/change-password",
-        //   icon: <LockOpenIcon className="text-purple-400" />,
-        //   label: "Mật Khẩu",
-        //   show: userData?.provider === "email",
-        // },
+        {
+          path: "/seller/change-password",
+          icon: <LockOpenIcon className="text-purple-400" />,
+          label: "Mật Khẩu",
+          show: userData?.provider === "email",
+        },
       ].filter((item) => item.show !== false),
     },
   ];

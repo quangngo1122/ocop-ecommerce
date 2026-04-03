@@ -130,7 +130,7 @@ export default function Header() {
     <div className="w-full pt-5 h-auto sticky top-0 z-50 bg-white shadow-md">
       <div className="w-full">
         {/* Header trên cùng */}
-        <div className="flex md:w-full flex-col md:flex-row justify-between items-center py-2 gap-2">
+        <div className="flex md:w-full flex-col md:flex-row justify-between items-center gap-2">
           <h1 className="text-[#5aa32a] md:ml-20 font-bold text-sm md:text-base text-center md:text-left">
             SÀN THƯƠNG MẠI ĐIỆN TỬ CẦN THƠ
           </h1>
@@ -280,7 +280,7 @@ export default function Header() {
         </div>
 
         {/* Logo + Search + Cart */}
-        <div className="flex flex-col md:w-full md:flex-row items-center justify-between py-3 gap-4">
+        <div className="flex flex-row w-full items-center justify-evenly py-2 gap-4">
           <div
             onClick={() => navigate("/")}
             className="w-24 md:w-32 md:ml-40 cursor-pointer"
@@ -334,7 +334,7 @@ export default function Header() {
         </div>
 
         <div className="bg-[#5aa32a] flex w-full py-2">
-          <div className="max-w-7xl mx-auto flex items-center justify-between px-4">
+          <div className="max-w-7xl mx-auto flex items-start justify-between px-4">
             {/* Nút menu mobile */}
             <button
               onClick={() =>
@@ -442,8 +442,8 @@ export default function Header() {
                                           `/product/category/${child.name
                                             .toLowerCase()
                                             .replace(/\s+/g, "-")}.${encodeId(
-                                            child._id
-                                          )}`
+                                            child._id,
+                                          )}`,
                                         );
                                       }}
                                       className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
@@ -505,7 +505,7 @@ export default function Header() {
                             onClick={() => {
                               setRegionMenuOpen(false);
                               navigate(
-                                `/district/${encodeId(district.DistrictID)}`
+                                `/district/${encodeId(district.DistrictID)}`,
                               );
                             }}
                           >

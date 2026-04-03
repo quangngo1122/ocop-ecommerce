@@ -89,7 +89,9 @@ export default function AdditionalSettingsPage() {
   const navigate = useNavigate();
 
   const { data: myShopData, loading } = useQuery(MY_SHOP_QUERY, {
-    fetchPolicy: "network-only",
+    // fetchPolicy: "network-only",
+    fetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-first",
   });
   const myShop = myShopData?.myShop;
   const shopId = myShop?._id;
@@ -101,10 +103,10 @@ export default function AdditionalSettingsPage() {
   const [addBusinessLicense, { loading: adding }] =
     useMutation(ADD_BUSINESS_LICENSE);
   const [updateBusinessLicense, { loading: updating }] = useMutation(
-    UPDATE_BUSINESS_LICENSE
+    UPDATE_BUSINESS_LICENSE,
   );
   const [deleteBusinessLicense, { loading: deleting }] = useMutation(
-    DELETE_BUSINESS_LICENSE
+    DELETE_BUSINESS_LICENSE,
   );
 
   // Form state
@@ -466,8 +468,8 @@ export default function AdditionalSettingsPage() {
                   ? "Đang cập nhật..."
                   : "Cập nhật giấy phép"
                 : adding
-                ? "Đang thêm..."
-                : "Thêm giấy phép"}
+                  ? "Đang thêm..."
+                  : "Thêm giấy phép"}
             </button>
             {editMode && (
               <button

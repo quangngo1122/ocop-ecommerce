@@ -74,7 +74,7 @@ function getRevenueDataFromOrders(orders, chartType = "daily") {
 
 function getBestSellingProducts(orders) {
   const deliveredOrders = orders.filter((order) =>
-    order.status_history?.some((s) => s.status === "delivered")
+    order.status_history?.some((s) => s.status === "delivered"),
   );
 
   const productMap = new Map();
@@ -319,20 +319,24 @@ export default function DashboardPage() {
 
   const { data: shopsData } = useQuery(SHOPS_QUERY);
   const shopId = shopsData?.shops?.items?.find(
-    (shop) => shop.owner?._id === userId
+    (shop) => shop.owner?._id === userId,
   )?._id;
   const { data: productsData, loading: productsLoading } = useQuery(
     PRODUCTS_QUERY,
     {
       variables: { filter: { shopId } },
       skip: !shopId,
-      fetchPolicy: "network-only",
-    }
+      // fetchPolicy: "network-only",
+      fetchPolicy: "cache-and-network",
+      nextFetchPolicy: "cache-first",
+    },
   );
 
   const { data: myShopRaiting } = useQuery(MY_SHOP_RAITING, {
     variables: { filter: { shop_id: shopId } },
-    fetchPolicy: "network-only",
+    // fetchPolicy: "network-only",
+    fetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-first",
   });
 
   const ratingsData = {
@@ -354,14 +358,14 @@ export default function DashboardPage() {
 
   const totalRatings = Object.values(ratingsData).reduce(
     (acc, val) => acc + val,
-    0
+    0,
   );
 
   const averageRating =
     totalRatings > 0
       ? Object.entries(ratingsData).reduce(
           (sum, [star, count]) => sum + parseInt(star) * count,
-          0
+          0,
         ) / totalRatings
       : 0;
 
@@ -374,12 +378,14 @@ export default function DashboardPage() {
       star: parseInt(star),
       count,
       percent: totalRatings > 0 ? ((count / totalRatings) * 100).toFixed(0) : 0,
-    })
+    }),
   );
 
   const { data: orderData } = useQuery(MY_SHOP_ORDERS_QUERY, {
     variables: { filter: { shopId } },
-    fetchPolicy: "network-only",
+    // fetchPolicy: "network-only",
+    fetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-first",
   });
 
   // const totalorder = orderData?.myShopOrders?.total ?? 0;
@@ -389,13 +395,13 @@ export default function DashboardPage() {
   const totalorder = orders.length;
 
   const deliveredOrders = orders.filter((order) =>
-    order.status_history?.some((s) => s.status === "delivered")
+    order.status_history?.some((s) => s.status === "delivered"),
   );
 
   // Doanh thu chỉ lấy từ order delivered
   const revenue = deliveredOrders.reduce(
     (sum, order) => sum + (order.amounts?.total || 0),
-    0
+    0,
   );
 
   // const revenue = orders.reduce(
@@ -408,7 +414,7 @@ export default function DashboardPage() {
   const totalStock = dataStock.reduce((sum, product) => {
     const productStock = product.variants?.reduce(
       (variantSum, variant) => variantSum + (variant.stock_quantity || 0),
-      0
+      0,
     );
     return sum + productStock;
   }, 0);
@@ -449,7 +455,7 @@ export default function DashboardPage() {
   const latestOrders = Array.isArray(orders)
     ? [...orders]
         .filter(
-          (order) => order.current_status === "pending"
+          (order) => order.current_status === "pending",
           // ||
           //   order.current_status === "confirmed" ||
           //   order.current_status === "preparing" ||
@@ -458,7 +464,7 @@ export default function DashboardPage() {
         .sort(
           (a, b) =>
             new Date(b.status_history?.[0]?.updatedAt || b.createdAt) -
-            new Date(a.status_history?.[0]?.updatedAt || a.createdAt)
+            new Date(a.status_history?.[0]?.updatedAt || a.createdAt),
         )
         .slice(0, 10)
     : [];
@@ -574,90 +580,6 @@ export default function DashboardPage() {
           expanded={isConfigRating}
           onToggleExpand={() => setIsConfigRating(!isConfigRating)}
         />
-
-        {/* <div
-          className={`bg-white p-6 rounded-lg shadow-lg ${
-            isConfigRating ? "h-auto" : "h-26"
-          }`}
-        >
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex float-left">
-              <h2 className="text-lg font-semibold mr-2">Tỉ lệ đánh giá</h2>
-              <button
-                onClick={handleReiview}
-                className="cursor-pointer hover:rotate-360 transition-transform duration-300"
-              >
-                <span className="w-5 h-5">
-                  <AddIcon />
-                </span>
-              </button>
-            </div>
-            <div className="flex gap-2">
-              <button
-                onClick={() => setIsConfigRating(!isConfigRating)}
-                className="p-2 hover:bg-gray-100  cursor-pointer rounded"
-              >
-                {isConfigRating ? (
-                  <span className="w-5 h-5">
-                    <RemoveIcon />
-                  </span>
-                ) : (
-                  <span className="w-5 h-5">
-                    <AddIcon />
-                  </span>
-                )}
-              </button>
-            </div>
-          </div>
-
-          {isConfigRating && (
-            <div className="h-[300px]">
-              <div className="flex items-center mb-2">
-                {[...Array(5)].map((_, index) => {
-                  const isFull = index < roundedUpRating;
-                  return (
-                    <svg
-                      key={index}
-                      className={`w-4 h-4 mr-1 ${
-                        isFull ? "text-yellow-300" : "text-gray-300"
-                      }`}
-                      fill="currentColor"
-                      viewBox="0 0 22 20"
-                    >
-                      <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-                    </svg>
-                  );
-                })}
-                <p className="ms-1 text-sm font-medium text-gray-500">
-                  {formattedAverageRating}
-                </p>
-                <p className="ms-1 text-sm font-medium text-gray-500">trên</p>
-                <p className="ms-1 text-sm font-medium text-gray-500">5</p>
-              </div>
-              <p className="text-sm font-medium text-gray-500">
-                {totalRatings.toLocaleString()} tổng đánh giá
-              </p>
-              {ratingPercentages
-                .sort((a, b) => b.star - a.star)
-                .map(({ star, percent }) => (
-                  <div key={star} className="flex items-center mt-5">
-                    <span className="text-sm font-medium text-blue-600">
-                      {star} star
-                    </span>
-                    <div className="w-2/4 h-5 mx-4 bg-gray-200 rounded-sm">
-                      <div
-                        className="h-5 bg-yellow-300 rounded-sm"
-                        style={{ width: `${percent}%` }}
-                      ></div>
-                    </div>
-                    <span className="text-sm font-medium text-gray-500">
-                      {percent}%
-                    </span>
-                  </div>
-                ))}
-            </div>
-          )}
-        </div> */}
       </div>
       {/* 10 đơn hàng mới nhất */}
       <LatestOrderList orders={latestOrders} />

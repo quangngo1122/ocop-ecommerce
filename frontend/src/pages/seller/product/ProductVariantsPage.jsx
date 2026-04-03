@@ -80,7 +80,9 @@ export default function ProductVariantsPage() {
 
   const { data, loading } = useQuery(GET_PRODUCT, {
     variables: { filter: { _id: productId } },
-    fetchPolicy: "network-only",
+    // fetchPolicy: "network-only",
+    fetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-first",
   });
 
   const [updateVariant, { loadingVariant }] = useMutation(UPDATE_VARIANT);
@@ -95,20 +97,20 @@ export default function ProductVariantsPage() {
           quantity: v.stock_quantity ?? "",
           imageFile: null,
           imagePreview: v.image,
-        }))
+        })),
       );
       setShowDimensions(
         data.product.variants.reduce((acc, v) => {
           acc[v._id] = false;
           return acc;
-        }, {})
+        }, {}),
       );
     }
   }, [data]);
 
   const handleChange = (idx, field, value) => {
     setVariants((prev) =>
-      prev.map((v, i) => (i === idx ? { ...v, [field]: value } : v))
+      prev.map((v, i) => (i === idx ? { ...v, [field]: value } : v)),
     );
   };
 
@@ -123,8 +125,8 @@ export default function ProductVariantsPage() {
               imageFile: file,
               imagePreview: URL.createObjectURL(file),
             }
-          : v
-      )
+          : v,
+      ),
     );
   };
 
@@ -233,7 +235,7 @@ export default function ProductVariantsPage() {
         {/* <div className="overflow-x-auto p-6 bg-white rounded-lg shadow border border-gray-200">
           <table className="min-w-full bg-white rounded shadow border">
             <thead> */}
-        <div className="p-6 bg-white rounded-lg border border-gray-300 overflow-hidden shadow">
+        <div className="p-6 overflow-x-auto bg-white rounded-lg border border-gray-300 overflow-hidden shadow">
           <table className="min-w-full bg-white">
             <thead className="bg-gray-100">
               <tr>
@@ -288,11 +290,11 @@ export default function ProductVariantsPage() {
                                                   ...attr,
                                                   name: e.target.value,
                                                 }
-                                              : attr
+                                              : attr,
                                         ),
                                       }
-                                    : v2
-                                )
+                                    : v2,
+                                ),
                               );
                             }}
                             placeholder="Tên thuộc tính"
@@ -315,11 +317,11 @@ export default function ProductVariantsPage() {
                                                   ...attr,
                                                   value: e.target.value,
                                                 }
-                                              : attr
+                                              : attr,
                                         ),
                                       }
-                                    : v2
-                                )
+                                    : v2,
+                                ),
                               );
                             }}
                             placeholder="Giá trị"

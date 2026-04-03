@@ -138,7 +138,9 @@ export default function ProductManagementPage() {
   const { data, loading } = useQuery(SHOP_PRODUCTS_QUERY, {
     variables: { shopId },
     skip: !shopId,
-    fetchPolicy: "network-only",
+    // fetchPolicy: "network-only",
+    fetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-first",
   });
 
   const [deleteProductMutation] = useMutation(DELETE_PRODUCT);
@@ -150,7 +152,7 @@ export default function ProductManagementPage() {
     allProducts = allProducts.filter(
       (p) =>
         p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        p._id.toLowerCase().includes(searchTerm.toLowerCase())
+        p._id.toLowerCase().includes(searchTerm.toLowerCase()),
     );
   }
   // if (categoryFilter) {
@@ -197,7 +199,7 @@ export default function ProductManagementPage() {
 
   const products = allProducts.slice(
     (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+    currentPage * itemsPerPage,
   );
 
   const pageNumbers = [];
@@ -236,7 +238,7 @@ export default function ProductManagementPage() {
 
     return parentCategories.flatMap((parent) => {
       const children = childCategories.filter(
-        (child) => child.parent?._id === parent._id
+        (child) => child.parent?._id === parent._id,
       );
 
       return [
@@ -570,7 +572,7 @@ export default function ProductManagementPage() {
                       <td className="px-2 py-4 border border-gray-300 text-center">
                         <span
                           className={`px-2 py-1 rounded whitespace-nowrap ${getStatusColor(
-                            product.status
+                            product.status,
                           )}`}
                         >
                           {getStatusText(product.status)}
@@ -704,7 +706,7 @@ export default function ProductManagementPage() {
                         <b>Trạng thái:</b>{" "}
                         <span
                           className={`px-2 py-1 rounded text-xs ${getStatusColor(
-                            product.status
+                            product.status,
                           )}`}
                         >
                           {getStatusText(product.status)}

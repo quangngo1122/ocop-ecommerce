@@ -223,12 +223,16 @@ export default function StatisticalPage() {
         .format("YYYY-MM-DDTHH:mm:ss[Z]"),
     },
     skip: !shopId,
-    fetchPolicy: "network-only",
+    // fetchPolicy: "network-only",
+    fetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-first",
   });
 
   const { data: orderData } = useQuery(MY_SHOP_ORDERS_QUERY, {
     variables: { filter: { shopId } },
-    fetchPolicy: "network-only",
+    // fetchPolicy: "network-only",
+    fetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-first",
   });
 
   const { data: compareDataFull } = useQuery(GET_STATISTICS, {
@@ -236,7 +240,9 @@ export default function StatisticalPage() {
       shopId,
     },
     skip: !shopId,
-    fetchPolicy: "network-only",
+    // fetchPolicy: "network-only",
+    fetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-first",
   });
 
   const statsFull = compareDataFull?.getStatistics || {};
@@ -301,7 +307,9 @@ export default function StatisticalPage() {
       toDate: compareTo?.format("YYYY-MM-DDTHH:mm:ss[Z]"),
     },
     skip: !shopId || !compareFrom,
-    fetchPolicy: "network-only",
+    // fetchPolicy: "network-only",
+    fetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-first",
   });
 
   const stats = data?.getStatistics || {};

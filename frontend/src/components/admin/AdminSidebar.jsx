@@ -113,12 +113,12 @@ export default function AdminSidebar({ collapsed = false, toggleSidebar }) {
     {
       section: "Quản Lý Cá Nhân",
       items: [
-        // {
-        //   path: "/admin/profile",
-        //   icon: <PermContactCalendarIcon className="text-yellow-400" />,
-        //   label: "Hồ Sơ",
-        //   show: true,
-        // },
+        {
+          path: "/admin/profile",
+          icon: <PermContactCalendarIcon className="text-yellow-400" />,
+          label: "Hồ Sơ",
+          show: true,
+        },
         {
           path: "/admin/change-password",
           icon: <LockOpenIcon className="text-purple-400" />,
