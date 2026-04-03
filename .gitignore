@@ -15,3 +15,4 @@ backend/build/
 # system
 .DS_Store
 all.tar
+serviceAccountKey.json
