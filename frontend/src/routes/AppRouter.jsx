@@ -78,7 +78,6 @@ import AdminOrderPage from "../pages/admin/orders/AdminOrderPage.jsx";
 import AdminReviewPage from "../pages/admin/review/AdminReviewPage.jsx";
 // import AdminAuditLogPage from "../pages/admin/auditlogs/AdminAuditLogPage.jsx";
 
-import AddProductPageTest from "../pages/seller/product/AddProductPageTest.jsx";
 // import AdminAuditLogDetailPage from "../pages/admin/auditlogs/AdminAuditLogDetailPage.jsx";
 import AdminOrderDetailPage from "../pages/admin/orders/AdminOrderDetailPage.jsx";
 import AdminSellerDetailPage from "../pages/admin/seller/AdminSellerDetailPage.jsx";
@@ -92,6 +91,7 @@ import { Import } from "lucide-react";
 //------------------------------
 
 // test--------------------------------
+// import AddProductPageTest from "../pages/seller/product/AddProductPageTest.jsx";
 // import AdminBannerPage from "../pages/admin/AdminBannerPageTest.jsx";
 
 export default createBrowserRouter([
@@ -260,10 +260,10 @@ export default createBrowserRouter([
                     path: "add",
                     element: <AddProductPage />,
                   },
-                  {
-                    path: "addtest",
-                    element: <AddProductPageTest />,
-                  },
+                  // {
+                  //   path: "addtest",
+                  //   element: <AddProductPageTest />,
+                  // },
                   {
                     path: "edit/:productId",
                     element: <UpdateProductPage />,

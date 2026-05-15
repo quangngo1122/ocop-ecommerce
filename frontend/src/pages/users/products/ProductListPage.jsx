@@ -24,6 +24,9 @@ const GET_PRODUCTS = gql`
         variants {
           _id
         }
+        rating {
+          average
+        }
         shop_id {
           name
           logo
@@ -207,7 +210,7 @@ export default function ProductListPage() {
                     >
                       {p}
                     </button>
-                  )
+                  ),
                 )}
 
                 <button

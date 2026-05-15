@@ -23,6 +23,9 @@ const GET_PRODUCTS_BY_SEARCH = gql`
         variants {
           _id
         }
+        rating {
+          average
+        }
         shop_id {
           name
           logo
@@ -95,8 +98,8 @@ export default function ProductSearchPage() {
           newSort === "price-asc"
             ? "ascending"
             : newSort === "price-desc"
-            ? "descending"
-            : null,
+              ? "descending"
+              : null,
         status: "active",
       },
       pagination: { limit, offset: 0 },
