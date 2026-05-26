@@ -175,14 +175,18 @@ export default function CategoriesPage() {
       pagination: { itemsPerPage, offset: (page - 1) * itemsPerPage },
       filter: { name: search || undefined, id: searchId || undefined },
     },
-    fetchPolicy: "network-only",
+    // fetchPolicy: "network-only",
+    fetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-first",
   });
 
   const { data: productData, loading: productLoading } = useQuery(
     GET_PRODUCTS,
     {
-      fetchPolicy: "network-only",
-    }
+      // fetchPolicy: "network-only",
+      fetchPolicy: "cache-and-network",
+      nextFetchPolicy: "cache-first",
+    },
   );
 
   const [createCategory, { loading: creating }] = useMutation(CREATE_CATEGORY);
@@ -191,7 +195,7 @@ export default function CategoriesPage() {
 
   const categories = useMemo(() => {
     return (categoryData?.categories?.items || []).filter((cat) =>
-      statusFilter ? cat.status === statusFilter : true
+      statusFilter ? cat.status === statusFilter : true,
     );
   }, [categoryData, statusFilter]);
   const total = categories.length;
@@ -204,7 +208,7 @@ export default function CategoriesPage() {
   useEffect(() => {
     if (productData?.products?.items) {
       const ids = new Set(
-        productData.products.items.map((item) => item.category_id._id)
+        productData.products.items.map((item) => item.category_id._id),
       );
       setUsedCategoryIds(ids);
     }
@@ -218,7 +222,7 @@ export default function CategoriesPage() {
 
   // Lấy danh sách danh mục cha (không phải chính nó, không phải con của nó)
   const parentOptions = categories.filter(
-    (cat) => !cat.parent && cat._id !== editingId
+    (cat) => !cat.parent && cat._id !== editingId,
   );
   const hasChild = (catId) =>
     categories.some((cat) => cat.parent && cat.parent._id === catId);
@@ -268,7 +272,7 @@ export default function CategoriesPage() {
       ) {
         showToast(
           "Không thể ngừng danh mục chứa sản phẩm hoặc danh mục con chứa sản phẩm!",
-          "warning"
+          "warning",
         );
         return;
       }
@@ -286,7 +290,7 @@ export default function CategoriesPage() {
       // Chỉ set con inactive nếu cha set sang inactive và đã qua check (không có sản phẩm trong cây danh mục)
       if (editForm.status === "inactive" && editForm.status !== oldStatus) {
         const childCategories = categories.filter(
-          (cat) => cat.parent && cat.parent._id === editingId
+          (cat) => cat.parent && cat.parent._id === editingId,
         );
         for (const child of childCategories) {
           await updateCategory({
@@ -319,11 +323,11 @@ export default function CategoriesPage() {
     const sameLevelCategories = categories.filter(
       (cat) =>
         (isParent && !cat.parent) ||
-        (cat.parent?._id === createForm.parentId && !isParent)
+        (cat.parent?._id === createForm.parentId && !isParent),
     );
 
     const isDuplicateName = sameLevelCategories.some(
-      (cat) => cat.name.toLowerCase() === createForm.name.trim().toLowerCase()
+      (cat) => cat.name.toLowerCase() === createForm.name.trim().toLowerCase(),
     );
 
     if (isDuplicateName) {
@@ -382,7 +386,7 @@ export default function CategoriesPage() {
       // alert("Không thể xóa danh mục cha khi tồn tại danh mục con!");
       showToast(
         "Không thể xóa danh mục cha khi còn tồn tại danh mục con!",
-        "warning"
+        "warning",
       );
       return;
     }
@@ -408,7 +412,7 @@ export default function CategoriesPage() {
   const sortedCategories = sortCategoriesFlat(categories);
   const paginatedCategories = sortedCategories.slice(
     (page - 1) * itemsPerPage,
-    page * itemsPerPage
+    page * itemsPerPage,
   );
 
   return (
@@ -776,8 +780,8 @@ export default function CategoriesPage() {
                               hasChild(cat._id)
                                 ? "Không thể xóa danh mục cha khi còn danh mục con!"
                                 : usedCategoryIds.has(cat._id)
-                                ? "Không thể xóa danh mục đang tồn tại sản phẩm!"
-                                : ""
+                                  ? "Không thể xóa danh mục đang tồn tại sản phẩm!"
+                                  : ""
                             }
                             // disabled={!isDeletable(cat.id) || deleting}
                           >
@@ -845,7 +849,7 @@ export default function CategoriesPage() {
                     >
                       {number}
                     </button>
-                  )
+                  ),
                 )}
                 <button
                   onClick={() => setPage((p) => Math.min(totalPages, p + 1))}

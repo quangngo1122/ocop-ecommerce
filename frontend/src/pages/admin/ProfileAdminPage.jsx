@@ -86,7 +86,9 @@ export default function ProfileAdminPage() {
   } = useQuery(USER_QUERY, {
     variables: { id: userId },
     skip: !userId,
-    fetchPolicy: "network-only",
+    // fetchPolicy: "network-only",
+    fetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-first",
     onCompleted: (data) => {
       if (data?.user) {
         const addr =
@@ -150,7 +152,7 @@ export default function ProfileAdminPage() {
         setLoading((l) => ({ ...l, province: false }));
 
         const found = data.data?.find(
-          (p) => p.ProvinceName === initialProfileData.province
+          (p) => p.ProvinceName === initialProfileData.province,
         );
         if (found) {
           setProfileData((prev) => ({ ...prev, provinceId: found.ProvinceID }));
@@ -188,7 +190,7 @@ export default function ProfileAdminPage() {
         setLoading((l) => ({ ...l, district: false }));
 
         const found = data.data?.find(
-          (d) => d.DistrictName === initialProfileData.district
+          (d) => d.DistrictName === initialProfileData.district,
         );
         if (found) {
           setProfileData((prev) => ({ ...prev, districtId: found.DistrictID }));
@@ -222,7 +224,7 @@ export default function ProfileAdminPage() {
         setLoading((l) => ({ ...l, ward: false }));
 
         const found = data.data?.find(
-          (w) => w.WardName === initialProfileData.ward
+          (w) => w.WardName === initialProfileData.ward,
         );
         if (found) {
           setProfileData((prev) => ({ ...prev, wardCode: found.WardCode }));
@@ -235,7 +237,7 @@ export default function ProfileAdminPage() {
   const handleProvinceChange = (e) => {
     const provinceId = e.target.value;
     const provinceObj = provinces.find(
-      (p) => String(p.ProvinceID) === String(provinceId)
+      (p) => String(p.ProvinceID) === String(provinceId),
     );
     setProfileData((prev) => ({
       ...prev,
@@ -252,7 +254,7 @@ export default function ProfileAdminPage() {
   const handleDistrictChange = (e) => {
     const districtId = e.target.value;
     const districtObj = districts.find(
-      (d) => String(d.DistrictID) === String(districtId)
+      (d) => String(d.DistrictID) === String(districtId),
     );
     setProfileData((prev) => ({
       ...prev,
@@ -294,11 +296,11 @@ export default function ProfileAdminPage() {
         address: profileData.address,
         province:
           provinces.find(
-            (p) => String(p.ProvinceID) === String(profileData.provinceId)
+            (p) => String(p.ProvinceID) === String(profileData.provinceId),
           )?.ProvinceName || "",
         district:
           districts.find(
-            (d) => String(d.DistrictID) === String(profileData.districtId)
+            (d) => String(d.DistrictID) === String(profileData.districtId),
           )?.DistrictName || "",
         ward:
           wards.find((w) => String(w.WardCode) === String(profileData.wardCode))

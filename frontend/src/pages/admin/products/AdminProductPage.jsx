@@ -131,7 +131,7 @@ function renderCategoryOptions(categories) {
 
   return parentCategories.flatMap((parent) => {
     const children = childCategories.filter(
-      (child) => child.parent?._id === parent._id
+      (child) => child.parent?._id === parent._id,
     );
 
     const parentOption = (
@@ -183,7 +183,9 @@ export default function AdminProductPage() {
   // -------backup-------
 
   const { data, loading, error, refetch } = useQuery(PRODUCTS_QUERY, {
-    fetchPolicy: "network-only",
+    // fetchPolicy: "network-only",
+    fetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-first",
   });
 
   const { data: categoriesData, loading: categoriesLoading } =
@@ -545,7 +547,7 @@ export default function AdminProductPage() {
                 paginatedProducts.map((product, index) => {
                   // Tìm category theo id
                   const cat = categories.find(
-                    (c) => c._id === product.category_id?._id
+                    (c) => c._id === product.category_id?._id,
                   );
                   let categoryDisplay = "";
                   if (cat) {
@@ -606,7 +608,7 @@ export default function AdminProductPage() {
                         <button
                           onClick={() =>
                             navigate(
-                              `/admin/shop/detail/${product?.shop_id?._id}`
+                              `/admin/shop/detail/${product?.shop_id?._id}`,
                             )
                           }
                           className="text-indigo-500 font-bold hover:underline"
@@ -654,8 +656,8 @@ export default function AdminProductPage() {
                             product.status === "active"
                               ? "bg-green-100 text-green-800 px-2 py-1 rounded whitespace-nowrap"
                               : product.status === "pending"
-                              ? "bg-orange-100 text-orange-800 px-2 py-1 rounded whitespace-nowrap"
-                              : "bg-gray-200 text-gray-700 px-2 py-1 rounded whitespace-nowrap"
+                                ? "bg-orange-100 text-orange-800 px-2 py-1 rounded whitespace-nowrap"
+                                : "bg-gray-200 text-gray-700 px-2 py-1 rounded whitespace-nowrap"
                           }
                         >
                           {statusMap[product.status] || product.status}
@@ -711,7 +713,7 @@ export default function AdminProductPage() {
             ) : (
               paginatedProducts.map((product) => {
                 const cat = categories.find(
-                  (c) => c._id === product.category_id?._id
+                  (c) => c._id === product.category_id?._id,
                 );
                 const categoryDisplay = cat
                   ? cat.parent
@@ -813,8 +815,8 @@ export default function AdminProductPage() {
                               product.status === "active"
                                 ? "bg-green-100 text-green-800"
                                 : product.status === "pending"
-                                ? "bg-orange-100 text-orange-800"
-                                : "bg-gray-200 text-gray-700"
+                                  ? "bg-orange-100 text-orange-800"
+                                  : "bg-gray-200 text-gray-700"
                             }`}
                           >
                             {statusMap[product.status] || product.status}
